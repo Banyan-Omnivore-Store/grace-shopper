@@ -2,15 +2,41 @@
 
 const db = require('../server/db')
 const {User} = require('../server/db/models')
+const faker = require('faker/locale/en_US')
+
+const makeUser = () => {
+  const users = []
+  for (let i = 0; i < 10; i++) {
+    users.push({
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+      password: '123',
+      userStatus: 'member',
+      address: faker.address.streetAddress()
+    })
+  }
+  for (let i = 0; i < 2; i++) {
+    users.push({userStatus: 'guest'})
+  }
+  for (let i = 0; i < 10; i++) {
+    users.push({
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+      password: '123',
+      userStatus: 'admin',
+      address: faker.address.streetAddress()
+    })
+  }
+  return users
+}
 
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
 
-  const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
-  ])
+  const users = await Promise.all([User.bulkCreate(makeUser())])
 
   console.log(`seeded ${users.length} users`)
   console.log(`seeded successfully`)
