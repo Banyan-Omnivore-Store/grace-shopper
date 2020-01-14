@@ -7,6 +7,7 @@ module.exports = db.define('order', {
       'cartEmpty',
       'cartNotEmpty',
       'purchased',
+      'canceled',
       'shipped',
       'delivered'
     ),
