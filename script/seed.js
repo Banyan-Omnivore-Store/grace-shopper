@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const {User} = require('../server/db/models')
+const {User, Product, Order} = require('../server/db/models')
 const faker = require('faker/locale/en_US')
 
 const makeUser = () => {
@@ -19,7 +19,7 @@ const makeUser = () => {
   for (let i = 0; i < 2; i++) {
     users.push({userStatus: 'guest'})
   }
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 2; i++) {
     users.push({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
@@ -32,13 +32,51 @@ const makeUser = () => {
   return users
 }
 
+const makeProduct = () => {
+  const products = []
+  for (let i = 0; i < 10; i++) {
+    products.push({
+      productName: faker.commerce.productName(),
+      price: faker.commerce.price(),
+      inventory: faker.random.number(),
+      imageUrl: faker.image.imageUrl(),
+      description: faker.company.catchPhraseDescriptor()
+    })
+  }
+  return products
+}
+
+const makeOrder = () => {
+  const orders = []
+  for (let i = 0; i < 10; i++) {
+    orders.push({
+      status: ['cartNotEmpty', 'purchased', 'shipped', 'delivered'][
+        Math.floor(Math.random() * 4)
+      ],
+      shippingInfo: faker.address.streetAddress(),
+      cartTotal: faker.commerce.price(),
+      userId: i + 1
+    })
+  }
+
+  orders.push({
+    status: 'cartEmpty',
+    userId: 12
+  })
+
+  return orders
+}
+
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
 
-  const users = await Promise.all([User.bulkCreate(makeUser())])
-
+  const users = await User.bulkCreate(makeUser())
+  const products = await Product.bulkCreate(makeProduct())
+  const orders = await Order.bulkCreate(makeOrder())
   console.log(`seeded ${users.length} users`)
+  console.log(`seeded ${products.length} products`)
+  console.log(`seeded ${orders.length} orders`)
   console.log(`seeded successfully`)
 }
 
