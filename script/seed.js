@@ -130,11 +130,7 @@ async function seed() {
 
   for (let i = 0; i < products.length; i++) {
     await products[i].addCategory(categories[Math.ceil(Math.random() * 5)])
-  }
-
-  // products.forEach(async function(product) {
-  //   await product.addCategory(categories[Math.ceil(Math.random() * 10)])
-  // })
+  } //associating products w/ categories
 
   console.log(`seeded ${users.length} users`)
   console.log(`seeded ${products.length} products`)
