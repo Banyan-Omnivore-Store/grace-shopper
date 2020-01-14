@@ -1,7 +1,14 @@
 'use strict'
 
 const db = require('../server/db')
-const {User, Product, Order} = require('../server/db/models')
+const {
+  User,
+  Product,
+  Order,
+  OrderItem,
+  Review,
+  Category
+} = require('../server/db/models')
 const faker = require('faker/locale/en_US')
 
 const makeUser = () => {
@@ -67,6 +74,49 @@ const makeOrder = () => {
   return orders
 }
 
+const makeOrderItems = () => {
+  const orderItems = []
+  for (let i = 0; i < 11; i++) {
+    orderItems.push({
+      quantity: faker.random.number(),
+      productId: Math.ceil(Math.random() * 10),
+      orderId: i + 1
+    })
+  }
+  return orderItems
+}
+
+const madeCategories = [
+  {
+    name: 'steel-cut oats'
+  },
+  {
+    name: 'rolled oats'
+  },
+  {
+    name: 'instant oats'
+  },
+  {
+    name: 'oat bran'
+  },
+  {
+    name: 'cbd oats'
+  }
+]
+
+const makeReview = () => {
+  const reviews = []
+  for (let i = 0; i < 8; i++) {
+    reviews.push({
+      rating: Math.ceil(Math.random() * 5),
+      comment: faker.company.catchPhrase(),
+      userId: i + 1,
+      productId: Math.ceil(Math.random() * 10)
+    })
+  }
+  return reviews
+}
+
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
@@ -74,15 +124,26 @@ async function seed() {
   const users = await User.bulkCreate(makeUser())
   const products = await Product.bulkCreate(makeProduct())
   const orders = await Order.bulkCreate(makeOrder())
+  const orderItems = await OrderItem.bulkCreate(makeOrderItems())
+  const reviews = await Review.bulkCreate(makeReview())
+  const categories = await Category.bulkCreate(madeCategories)
+
+  for (let i = 0; i < products.length; i++) {
+    await products[i].addCategory(categories[Math.ceil(Math.random() * 5)])
+  } //associating products w/ categories
+
   console.log(`seeded ${users.length} users`)
   console.log(`seeded ${products.length} products`)
   console.log(`seeded ${orders.length} orders`)
+  console.log(`seeded ${orderItems.length} order items`)
+  console.log(`seeded ${reviews.length} reviews`)
   console.log(`seeded successfully`)
 }
 
 // We've separated the `seed` function from the `runSeed` function.
 // This way we can isolate the error handling and exit trapping.
 // The `seed` function is concerned only with modifying the database.
+
 async function runSeed() {
   console.log('seeding...')
   try {
