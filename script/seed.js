@@ -74,18 +74,6 @@ const makeOrder = () => {
   return orders
 }
 
-const makeOrderItems = () => {
-  const orderItems = []
-  for (let i = 0; i < 11; i++) {
-    orderItems.push({
-      quantity: faker.random.number(),
-      productId: Math.ceil(Math.random() * 10),
-      orderId: i + 1
-    })
-  }
-  return orderItems
-}
-
 const madeCategories = [
   {
     name: 'steel-cut oats'
@@ -124,7 +112,6 @@ async function seed() {
   const users = await User.bulkCreate(makeUser())
   const products = await Product.bulkCreate(makeProduct())
   const orders = await Order.bulkCreate(makeOrder())
-  const orderItems = await OrderItem.bulkCreate(makeOrderItems())
   const reviews = await Review.bulkCreate(makeReview())
   const categories = await Category.bulkCreate(madeCategories)
 
@@ -132,10 +119,15 @@ async function seed() {
     await products[i].addCategory(categories[Math.ceil(Math.random() * 5)])
   } //associating products w/ categories
 
+  for (let i = 0; i < orders.length - 2; i++) {
+    await orders[i].addProduct(
+      products[Math.ceil(Math.random() * products.length)]
+    )
+  } //associating products w/ categories
+
   console.log(`seeded ${users.length} users`)
   console.log(`seeded ${products.length} products`)
   console.log(`seeded ${orders.length} orders`)
-  console.log(`seeded ${orderItems.length} order items`)
   console.log(`seeded ${reviews.length} reviews`)
   console.log(`seeded successfully`)
 }
