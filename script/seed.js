@@ -34,7 +34,7 @@ const makeUser = () => {
 
 const makeProduct = () => {
   const products = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 200; i++) {
     products.push({
       productName: faker.commerce.productName(),
       price: faker.commerce.price(),
