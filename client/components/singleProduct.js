@@ -8,6 +8,8 @@ class UnconnectedSingleProduct extends React.Component {
     this.addToCartButtonClickHandler = this.addToCartButtonClickHandler.bind(
       this
     )
+
+    this.state = {value: 1}
   }
 
   componentDidMount() {
@@ -39,7 +41,11 @@ class UnconnectedSingleProduct extends React.Component {
 
         <div>
           <select>
-            {inventoryArr.map(item => <option key={item}>{item}</option>)}
+            {inventoryArr.map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </select>
           <button
             type="button"
