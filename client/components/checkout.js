@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {fetchCart} from '../store/cart'
+import axios from 'axios'
 
 class Checkout extends React.Component {
   constructor(props) {
@@ -27,8 +28,18 @@ class Checkout extends React.Component {
     })
   }
 
-  handlePlaceOrder(event) {
+  async handlePlaceOrder(event, orderId) {
     event.preventDefault()
+    try {
+      await axios.put('/api/orders/purchase', {
+        orderId,
+        address: this.state.address,
+        payment: this.state.payment
+      })
+      history.push('/home')
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   render() {
@@ -55,7 +66,10 @@ class Checkout extends React.Component {
           <div className="checkout-info">
             <div className="checkout-info_title">Review Your Order</div>
           </div>
-          <form className="checkout-form" onSubmit={this.handlePlaceOrder}>
+          <form
+            className="checkout-form"
+            onSubmit={event => this.handlePlaceOrder(event, this.props.cart.id)}
+          >
             <div className="checkout-details">
               <div className="checkout-detailst_delivery">
                 <label htmlFor="address">Shipping Address</label>
