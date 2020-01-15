@@ -3,9 +3,9 @@ import {connect} from 'react-redux'
 import {fetchCart} from '../store/cart'
 
 const Cart = props => {
-  console.log(props.cart)
   let products = []
   let cartTotal = ''
+  let checkoutButton
   if (props.cart.products) {
     products = props.cart.products
   }
@@ -16,6 +16,7 @@ const Cart = props => {
       0
     )
     cartTotal = `Subtotal: ${totalPrice}`
+    checkoutButton = <button>Checkout</button>
   }
 
   return (
@@ -41,6 +42,7 @@ const Cart = props => {
       </div>
       <div className="cart-total">{cartTotal}</div>
       <button onClick={props.fetchCart}>get cart(checkout)</button>
+      {checkoutButton}
     </div>
   )
 }
