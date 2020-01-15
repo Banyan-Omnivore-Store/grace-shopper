@@ -4,9 +4,12 @@ import {NavLink, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {setProducts, fetchProducts} from '../store/products'
 
+const addToCart = (productId, quantity = 1) => {
+  console.log('product id = ', productId, 'quantity = ', quantity)
+}
+
 //export functional component which maps through props.products
 function AllProducts(props) {
-  console.log('props: ', props)
   if (props.products.length === 0) {
     return <div>No Products</div>
   } else if (props.products) {
@@ -22,6 +25,9 @@ function AllProducts(props) {
             <p>Description: {product.description}</p>
             <p>Price: {product.price}</p>
             <img src={product.imageUrl} height="200px" width="250px" />
+            <button type="button" onClick={() => addToCart(product.id)}>
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>
