@@ -16,6 +16,9 @@ class Checkout extends React.Component {
 
   componentDidMount() {
     this.props.fetchCart()
+    this.setState({
+      address: this.props.user.address
+    })
   }
 
   handleChange(event) {
@@ -89,9 +92,22 @@ class Checkout extends React.Component {
             </div>
             <div className="checkout-place-order">
               <button type="submit">Place your order</button>
-              <div className="checkout-place-order_subtotal">{subtotal}</div>
-              <div className="checkout-place-order_tax">{tax}</div>
-              <div className="checkout-place-order_total">{total}</div>
+              <div className="checkout-place-order_subtotal">
+                <div className="checkout-place-order_subtotal__label">
+                  Subtotal
+                </div>
+                <div className="checkout-place-order_subtotal__value">
+                  {subtotal}
+                </div>
+              </div>
+              <div className="checkout-place-order_tax">
+                <div className="checkout-place-order_tax__label">Tax</div>
+                <div className="checkout-place-order_tax__value">{tax}</div>
+              </div>
+              <div className="checkout-place-order_total">
+                <div className="checkout-place-order_total__label">Total</div>
+                <div className="checkout-place-order_total__value">{total}</div>
+              </div>
             </div>
           </form>
         </div>
