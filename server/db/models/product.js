@@ -23,4 +23,8 @@ module.exports = db.define('product', {
     type: Sequelize.TEXT,
     allowNull: false
   }
+  //   productStatus: { //we are defaulting productStatus to false, so newly added products are not visible to the consumer unless otherwise specified
+  //       type: Sequelize.BOOLEAN,
+  //       defaultValue: false
+  //   }
 })
