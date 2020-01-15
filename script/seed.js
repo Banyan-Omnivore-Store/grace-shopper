@@ -1,14 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const {
-  User,
-  Product,
-  Order,
-  OrderItem,
-  Review,
-  Category
-} = require('../server/db/models')
+const {User, Product, Order, Review, Category} = require('../server/db/models')
 const faker = require('faker/locale/en_US')
 
 const makeUser = () => {
@@ -41,7 +34,7 @@ const makeUser = () => {
 
 const makeProduct = () => {
   const products = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 200; i++) {
     products.push({
       productName: faker.commerce.productName(),
       price: faker.commerce.price(),
