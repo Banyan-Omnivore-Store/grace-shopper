@@ -3,10 +3,7 @@ import React from 'react'
 import {NavLink, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {setProducts, fetchProducts} from '../store/products'
-
-const addToCart = (productId, quantity = 1) => {
-  console.log('product id = ', productId, 'quantity = ', quantity)
-}
+import {addToCart, fetchCart} from '../store/cart'
 
 //export functional component which maps through props.products
 function AllProducts(props) {
@@ -25,7 +22,15 @@ function AllProducts(props) {
             <p>Description: {product.description}</p>
             <p>Price: {product.price}</p>
             <img src={product.imageUrl} height="200px" width="250px" />
-            <button type="button" onClick={() => addToCart(product.id)}>
+            <button
+              type="button"
+              onClick={async () => {
+                // console.log('button clicked')
+                // console.log(props.user)
+                await addToCart(props.user.id, product.id, 1)
+                await fetchCart()
+              }}
+            >
               Add to Cart
             </button>
           </div>
@@ -40,13 +45,15 @@ function AllProducts(props) {
 
 const mapStateToProps = state => ({
   user: state.user,
-  products: state.products
+  products: state.products,
+  cart: state.cart
 })
 
 const mapDispatchToProps = dispatch => {
   return {
     setProducts: products => dispatch(setProducts(products)),
-    fetchProducts: () => dispatch(fetchProducts())
+    fetchProducts: () => dispatch(fetchProducts()),
+    fetchCart: () => dispatch(fetchCart())
   }
 }
 

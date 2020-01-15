@@ -23,23 +23,33 @@ router.get('/cart', async (req, res, next) => {
   }
 })
 
-router.put('/:orderId', async (req, res, next) => {
+router.put('/:userId', async (req, res, next) => {
   try {
-    const orderId = req.params.orderId
+    const userId = req.params.userId
     const order = await Order.findOne({
-      where: {id: orderId}
+      where: {userId: userId},
+      status: {
+        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+      }
     })
-    const productId = '6'
-    const quantity = 5
+    const productId = req.body.productId
+    const quantity = req.body.quantity
     const product = await Product.findOne({
       where: {id: productId}
     })
+    console.log(
+      'userId:',
+      userId,
+      'productId:',
+      productId,
+      'quantity:',
+      quantity
+    )
     await order.addProduct(product, {
       through: {
         quantity: quantity
       }
     })
-    console.log('item adding to cart')
     res.send('item added to cart')
   } catch (err) {
     next(err)
