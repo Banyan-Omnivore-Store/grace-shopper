@@ -13,6 +13,7 @@ import {
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
+import {fetchCart} from './store/cart.js'
 
 /**
  * COMPONENT
@@ -21,6 +22,7 @@ class Routes extends Component {
   componentDidMount() {
     this.props.loadInitialData()
     this.props.fetchProducts()
+    this.props.fetchCart()
   }
 
   render() {
@@ -59,7 +61,8 @@ const mapState = state => {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
     isLoggedIn: !!state.user.id,
-    products: state.products
+    products: state.products,
+    cart: state.cart
   }
 }
 
@@ -68,7 +71,8 @@ const mapDispatch = dispatch => {
     loadInitialData() {
       dispatch(me())
     },
-    fetchProducts: () => dispatch(fetchProducts())
+    fetchProducts: () => dispatch(fetchProducts()),
+    fetchCart: () => dispatch(fetchCart())
   }
 }
 

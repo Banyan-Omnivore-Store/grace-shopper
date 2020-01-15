@@ -3,10 +3,10 @@ import React from 'react'
 import {NavLink, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {setProducts, fetchProducts} from '../store/products'
+import {addToCart, fetchCart} from '../store/cart'
 
 //export functional component which maps through props.products
 function AllProducts(props) {
-  console.log('props: ', props)
   if (props.products.length === 0) {
     return <div>No Products</div>
   } else if (props.products) {
@@ -22,6 +22,15 @@ function AllProducts(props) {
             <p>Description: {product.description}</p>
             <p>Price: {product.price}</p>
             <img src={product.imageUrl} height="200px" width="250px" />
+            <button
+              type="button"
+              onClick={async () => {
+                await addToCart(props.user.id, product.id, 1)
+                await fetchCart()
+              }}
+            >
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>
@@ -34,13 +43,15 @@ function AllProducts(props) {
 
 const mapStateToProps = state => ({
   user: state.user,
-  products: state.products
+  products: state.products,
+  cart: state.cart
 })
 
 const mapDispatchToProps = dispatch => {
   return {
     setProducts: products => dispatch(setProducts(products)),
-    fetchProducts: () => dispatch(fetchProducts())
+    fetchProducts: () => dispatch(fetchProducts()),
+    fetchCart: () => dispatch(fetchCart())
   }
 }
 

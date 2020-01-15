@@ -23,6 +23,35 @@ router.get('/cart', async (req, res, next) => {
   }
 })
 
+router.put('/:userId', async (req, res, next) => {
+  try {
+    const userId = req.params.userId
+    const order = await Order.findOne({
+      where: {userId: userId},
+      status: {
+        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+      }
+    })
+    const productId = req.body.productId
+    const quantity = req.body.quantity
+    const product = await Product.findOne({
+      where: {id: productId}
+    })
+    console.log(
+      'userId:',
+      userId,
+      'productId:',
+      productId,
+      'quantity:',
+      quantity
+    )
+    await order.addProduct(product, {
+      through: {
+        quantity: quantity
+      }
+    })
+    res.send('item added to cart')
+
 router.put('/purchase', async (req, res, next) => {
   try {
     const order = await Order.findByPk(req.body.orderId, {
@@ -88,6 +117,7 @@ router.put('/purchase', async (req, res, next) => {
     } else {
       res.status(401).send('You are not the owner of this order')
     }
+
   } catch (err) {
     next(err)
   }
