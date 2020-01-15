@@ -5,7 +5,6 @@ const GET_SINGLE_PRODUCT = 'GET_SINGLE_PRODUCT'
 
 //action creators
 export const getSingleProduct = product => {
-  console.log('action creator')
   return {
     type: GET_SINGLE_PRODUCT,
     product
@@ -14,7 +13,6 @@ export const getSingleProduct = product => {
 
 //thunk
 export const fetchSingleProduct = productId => {
-  console.log('thunk')
   return async dispatch => {
     try {
       const {data} = await axios.get(`/api/products/${productId}`)
@@ -33,7 +31,6 @@ const initialState = {
 
 //reducer
 const productReducer = (state = initialState, action) => {
-  console.log('reducer')
   switch (action.type) {
     case GET_SINGLE_PRODUCT:
       return {...state, singleProduct: action.product}

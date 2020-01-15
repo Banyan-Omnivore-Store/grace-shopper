@@ -3,11 +3,32 @@ import {connect} from 'react-redux'
 import {fetchSingleProduct} from '../store/product'
 
 class UnconnectedSingleProduct extends React.Component {
-  // constructor() {
-  //     super();
-  // };
+  constructor() {
+    super()
+    this.addToCartButtonClickHandler = this.addToCartButtonClickHandler.bind(
+      this
+    )
+  }
+
+  componentDidMount() {
+    const productId = this.props.match.params.productId
+    this.props.fetchSingleProduct(productId)
+  }
+
+  addToCartButtonClickHandler(productId, quantity) {
+    console.log(productId, quantity)
+  }
+
+  arrMaker(number) {
+    let numArr = []
+    for (let i = 1; i < number + 1; i++) {
+      numArr.push(i)
+    }
+    return numArr
+  }
+
   render() {
-    console.log(this.props.singleProduct)
+    let inventoryArr = this.arrMaker(this.props.singleProduct.inventory)
     return this.props.singleProduct ? (
       <div>
         <img src={this.props.singleProduct.imageUrl} />
@@ -15,6 +36,20 @@ class UnconnectedSingleProduct extends React.Component {
         <h4>${this.props.singleProduct.price}</h4>
         <div>{this.props.singleProduct.inventory} in stock</div>
         <p>{this.props.singleProduct.description}</p>
+
+        <div>
+          <select>
+            {inventoryArr.map(item => <option key={item}>{item}</option>)}
+          </select>
+          <button
+            type="button"
+            onClick={() =>
+              this.addToCartButtonClickHandler(this.props.singleProduct.id, 1)
+            }
+          >
+            Add to Cart
+          </button>
+        </div>
       </div>
     ) : (
       <div>Loading...</div>
@@ -24,7 +59,7 @@ class UnconnectedSingleProduct extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    singleProduct: state.products.singleProduct
+    singleProduct: state.product.singleProduct
   }
 }
 
