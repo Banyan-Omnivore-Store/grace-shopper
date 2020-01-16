@@ -14,7 +14,7 @@ class SingleOrder extends React.Component {
   }
 
   render() {
-    if (this.props.order.length === 0) {
+    if (!this.props.order.id) {
       return <div>No Order Yet!</div>
     } else {
       return (
