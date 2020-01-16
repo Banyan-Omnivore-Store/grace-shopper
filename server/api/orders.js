@@ -24,6 +24,26 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+// router.get('/:orderId', async (req, res, next) => {
+//   if (req.user) {
+//     try {
+//       const order = await Order.findByPk(req.params.orderId, {
+//         include: [{model: Product}]
+//       })
+
+//       if (order.userId === req.user.id) {
+//         res.json(order)
+//       } else {
+//         res.status(401).send('Unauthenticated user')
+//       }
+//     } catch (err) {
+//       next(err)
+//     }
+//   } else {
+//     res.status(401).send('Unauthenticated user')
+//   }
+// })
+
 router.get('/cart', async (req, res, next) => {
   try {
     const cart = await Order.findOrCreate({
@@ -61,15 +81,15 @@ router.put('/user/:userId', async (req, res, next) => {
     const product = await Product.findOne({
       where: {id: productId}
     })
-    console.log(
-      'userId:',
-      userId,
-      'productId:',
-      productId,
-      'quantity:',
-      quantity
-    )
-    console.log(order)
+    // console.log(
+    //   'userId:',
+    //   userId,
+    //   'productId:',
+    //   productId,
+    //   'quantity:',
+    //   quantity
+    // )
+    // console.log(order)
     await order.addProduct(product, {
       through: {
         quantity: quantity
