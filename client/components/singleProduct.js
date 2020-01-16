@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import React from 'react'
 import {connect} from 'react-redux'
-import {fetchSingleProduct} from '../store/product'
+import {fetchSingleProduct, createNewReviewThunk} from '../store/product'
+// import { createNewReviewThunk } from '../store/product'
 
 class UnconnectedSingleProduct extends React.Component {
   constructor() {
@@ -10,7 +11,11 @@ class UnconnectedSingleProduct extends React.Component {
       this
     )
     this.quantityChangeHandler = this.quantityChangeHandler.bind(this)
-    this.state = {value: 1}
+    this.state = {
+      value: 1,
+      reviewRating: 1,
+      reviewText: ''
+    }
   }
 
   componentDidMount() {
@@ -24,6 +29,31 @@ class UnconnectedSingleProduct extends React.Component {
 
   quantityChangeHandler(event) {
     this.setState({value: event.target.value})
+  }
+
+  addReviewButtonClickHandler(userId, productId, rating, reviewText) {
+    const newReviewObject = {
+      rating,
+      comment: reviewText,
+      userId: userId.id,
+      productId
+    }
+    try {
+      event.preventDefault()
+      this.props.createReview(newReviewObject)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  reviewRatingChangeHandler(event) {
+    let rating = Number(event.target.value)
+    this.setState({reviewRating: rating})
+  }
+
+  reviewTextChangeHandler(event) {
+    let text = event.target.value
+    this.setState({reviewText: text})
   }
 
   arrMaker(number) {
@@ -45,6 +75,7 @@ class UnconnectedSingleProduct extends React.Component {
   }
 
   numStarConverter(num) {
+    num = Math.round(num)
     if (num === 1) {
       return '*'
     } else if (num === 2) {
@@ -98,6 +129,7 @@ class UnconnectedSingleProduct extends React.Component {
                   <div key={review.id}>
                     <div>Rated: {this.numStarConverter(review.rating)}</div>
                     <div>Comment: {review.comment}</div>
+                    <div>Comment by: {review.user.firstName}</div>
                     <p>
                       On: {review.createdAt.slice(5, 7)}/{review.createdAt.slice(
                         8,
@@ -115,17 +147,36 @@ class UnconnectedSingleProduct extends React.Component {
             </div>
           )}
           <div id="add_review">
-            <input type="text" />
-            <select name="start">
+            <input
+              type="text"
+              onChange={event => this.reviewTextChangeHandler(event)}
+            />
+            <select onChange={event => this.reviewRatingChangeHandler(event)}>
               <option value="1">*</option>
               <option value="2">**</option>
               <option value="3">***</option>
               <option value="4">****</option>
               <option value="5">*****</option>
             </select>
-            <button type="submit">Add Your Review</button>
-            {/* this button should add a rating to the database */}
-            {/* this button should take you to a "thank you for your comments" page */}
+            <button
+              type="submit"
+              onClick={async () => {
+                this.addReviewButtonClickHandler(
+                  this.props.user,
+                  this.props.singleProduct.id,
+                  this.state.reviewRating,
+                  this.state.reviewText
+                )
+                await this.props.fetchSingleProduct(
+                  this.props.match.params.productId
+                )
+                this.setState({reviewRating: 1})
+                this.setState({reviewText: ''})
+                console.log('state', this.state)
+              }}
+            >
+              Add Your Review
+            </button>
           </div>
         </div>
       </div>
@@ -137,13 +188,16 @@ class UnconnectedSingleProduct extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    singleProduct: state.product.singleProduct
+    singleProduct: state.product.singleProduct,
+    user: state.user
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId))
+    fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId)),
+    createReview: (userId, productId, rating, reviewText) =>
+      dispatch(createNewReviewThunk(userId, productId, rating, reviewText))
   }
 }
 
