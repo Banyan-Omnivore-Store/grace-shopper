@@ -2,13 +2,15 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {fetchCart} from '../store/cart'
 import axios from 'axios'
+import CheckoutComplete from './checkoutComplete'
 
 class Checkout extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       address: '',
-      payment: ''
+      email: '',
+      completedOrder: {}
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -31,12 +33,14 @@ class Checkout extends React.Component {
   async handlePlaceOrder(event, orderId) {
     event.preventDefault()
     try {
-      await axios.put('/api/orders/purchase', {
+      const res = await axios.put('/api/orders/purchase', {
         orderId,
         address: this.state.address,
-        payment: this.state.payment
+        payment: this.state.email
       })
-      history.push('/home')
+      this.setState({
+        completedOrder: res.data
+      })
     } catch (err) {
       console.log(err)
     }
@@ -52,7 +56,9 @@ class Checkout extends React.Component {
       products = this.props.cart.products
     }
 
-    if (products.length > 0) {
+    if (this.state.completedOrder.id) {
+      return <CheckoutComplete order={this.state.completedOrder} />
+    } else if (products.length > 0) {
       subtotal = products.reduce(
         (acc, curr) => acc + curr.price * curr.orderItems.quantity,
         0
@@ -80,12 +86,12 @@ class Checkout extends React.Component {
                   onChange={this.handleChange}
                 />
               </div>
-              <div className="checkout-details_payment">
-                <label htmlFor="payment">Payment Information</label>
+              <div className="checkout-details_email">
+                <label htmlFor="email">Confirmation Email</label>
                 <input
                   type="text"
-                  name="payment"
-                  value={this.state.payment}
+                  name="email"
+                  value={this.state.email}
                   onChange={this.handleChange}
                 />
               </div>

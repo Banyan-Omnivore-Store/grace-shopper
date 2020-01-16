@@ -23,7 +23,7 @@ router.get('/cart', async (req, res, next) => {
   }
 })
 
-router.put('/:userId', async (req, res, next) => {
+router.put('user/:userId', async (req, res, next) => {
   try {
     const userId = req.params.userId
     const order = await Order.findOne({
@@ -51,15 +51,21 @@ router.put('/:userId', async (req, res, next) => {
       }
     })
     res.send('item added to cart')
+  } catch (err) {
+    next(err)
+  }
+})
 
 router.put('/purchase', async (req, res, next) => {
+  //req.body includes orderId, shipping and email
   try {
+    let total = 0
     const order = await Order.findByPk(req.body.orderId, {
       include: [{model: Product}]
     })
     //if an order is already past cartNotEmpty or if it is empty, respond with an error
     if (order.status !== 'cartNotEmpty') {
-      const error = new Error('Server Error')
+      const error = new Error('Cart status error')
       error.status = 500
       return next(error)
     }
@@ -69,15 +75,16 @@ router.put('/purchase', async (req, res, next) => {
       for (let product of order.products) {
         const actualProduct = await Product.findByPk(product.id)
         if (actualProduct.inventory < product.orderItems.quantity) {
-          const error = new Error('Server Error')
+          const error = new Error('Not enough inventory to complete order')
           error.status = 500
           return next(error)
         }
       }
 
-      //change inventory to reflect purchase
+      //change inventory to reflect purchase and start adding price to get total
       for (let product of order.products) {
         const actualProduct = await Product.findByPk(product.id)
+        total += Number(actualProduct.price)
         await Product.update(
           {
             inventory: actualProduct.inventory - product.orderItems.quantity
@@ -90,22 +97,27 @@ router.put('/purchase', async (req, res, next) => {
         )
       }
       // set list price of purchased items so that history is not affected by changing prices
-      // for (let product of order.products) {
-      //   await OrderItem.update({
-      //     purchasePrice: product.price
-      //   }, {
-      //     where: {
-      //       orderId: req.body.orderId,
-      //       productId: product.id
-      //     }
-      //   })
-      // }
+      for (let product of order.products) {
+        await OrderItem.update(
+          {
+            purchasePrice: product.price
+          },
+          {
+            where: {
+              orderId: req.body.orderId,
+              productId: product.id
+            }
+          }
+        )
+      }
 
-      //finally, update order status to purchased
+      //update order status to purchased
       await Order.update(
         {
           status: 'purchased',
-          shippingInfo: req.body.address
+          shippingInfo: req.body.address,
+          cartSubtotal: Math.round(total * 100) / 100,
+          cartTotal: Math.round(total * 107) / 100
         },
         {
           where: {
@@ -113,11 +125,15 @@ router.put('/purchase', async (req, res, next) => {
           }
         }
       )
-      res.status(200)
+
+      const completedOrder = await Order.findByPk(req.body.orderId, {
+        include: [{model: Product}]
+      })
+      // send updated order to display order confirmation
+      res.status(200).json(completedOrder)
     } else {
       res.status(401).send('You are not the owner of this order')
     }
-
   } catch (err) {
     next(err)
   }
