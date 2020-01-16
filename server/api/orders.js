@@ -3,6 +3,27 @@ const {Op} = require('sequelize')
 const {Order, Product, OrderItem} = require('../db/models')
 module.exports = router
 
+router.get('/', async (req, res, next) => {
+  if (req.user) {
+    try {
+      const orders = await Order.findAll({
+        where: {
+          userId: req.user.id,
+          status: {
+            [Op.or]: ['purchased', 'shipped', 'delivered']
+          }
+        },
+        include: [{model: Product}]
+      })
+      res.json(orders)
+    } catch (err) {
+      next(err)
+    }
+  } else {
+    res.status(401).send('Unauthenticated user')
+  }
+})
+
 router.get('/cart', async (req, res, next) => {
   try {
     const cart = await Order.findOrCreate({

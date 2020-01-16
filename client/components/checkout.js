@@ -32,6 +32,7 @@ class Checkout extends React.Component {
 
   async handlePlaceOrder(event, orderId) {
     event.preventDefault()
+    //add logic to validate shipping address and email
     try {
       const res = await axios.put('/api/orders/purchase', {
         orderId,
