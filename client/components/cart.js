@@ -16,12 +16,15 @@ class Cart extends React.Component {
     if (this.props.cart.products) {
       products = this.props.cart.products
     }
-
+    console.log(products)
     if (products.length > 0) {
-      let totalPrice = products.reduce(
-        (acc, curr) => acc + curr.price * curr.orderItems.quantity,
-        0
-      )
+      let totalPrice =
+        Math.round(
+          products.reduce(
+            (acc, curr) => acc + curr.price * curr.orderItems.quantity,
+            0
+          ) * 100
+        ) / 100
       cartTotal = `Subtotal: ${totalPrice}`
 
       return (

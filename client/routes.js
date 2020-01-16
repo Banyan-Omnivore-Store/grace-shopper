@@ -9,7 +9,9 @@ import {
   Cart,
   Checkout,
   AllProducts,
-  SingleProduct
+  SingleProduct,
+  AllOrders,
+  SingleOrder
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
@@ -44,6 +46,8 @@ class Routes extends Component {
             <Route path="/home" component={UserHome} />
             <Route path="/cart" component={Cart} />
             <Route path="/checkout" component={Checkout} />
+            <Route path="/orders" component={AllOrders} />
+            <Route path="/orders/:orderId" component={SingleOrder} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
