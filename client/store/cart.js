@@ -4,7 +4,6 @@ import axios from 'axios'
  * ACTION TYPES
  */
 const GET_CART = 'GET_CART'
-const ADD_TO_CART = 'ADD_TO_CART'
 /**
  * INITIAL STATE
  */
@@ -27,9 +26,31 @@ export const fetchCart = () => async dispatch => {
   }
 }
 
-export const addToCart = async (userId, productId, quantity = '1') => {
+export const addToCart = async (orderId, productId, quantity = '1') => {
   try {
-    await axios.put(`/api/orders/user/${userId}`, {
+    await axios.put(`/api/orders/add/${orderId}`, {
+      productId,
+      quantity
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const deleteFromCart = async (orderId, productId) => {
+  try {
+    await axios.delete(`/api/orders/delete/`, {
+      data: {productId: productId, orderId: orderId}
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+//currently this is the same as addToCart, but may be diff once we add incrementing functionality to add to cart?
+export const changeQuantityInCart = async (orderId, productId, quantity) => {
+  try {
+    await axios.put(`/api/orders/add/${orderId}`, {
       productId,
       quantity
     })

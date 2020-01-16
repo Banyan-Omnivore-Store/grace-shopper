@@ -11,28 +11,30 @@ function AllProducts(props) {
     return <div>No Products</div>
   } else if (props.products) {
     return (
-      <div className="productList">
-        {props.products.map(product => (
-          <div key={product.id} className="product">
-            <NavLink to={`/products/${product.id}`} activeClassName="active">
-              <div>
-                <h2>{product.productName}</h2>
-              </div>
-            </NavLink>
-            <p>Description: {product.description}</p>
-            <p>Price: {product.price}</p>
-            <img src={product.imageUrl} height="200px" width="250px" />
-            <button
-              type="button"
-              onClick={async () => {
-                await addToCart(props.user.id, product.id, 1)
-                await fetchCart()
-              }}
-            >
-              Add to Cart
-            </button>
-          </div>
-        ))}
+      <div className="wrapper">
+        <div className="productList">
+          {props.products.map(product => (
+            <div key={product.id} className="product">
+              <NavLink to={`/products/${product.id}`} activeClassName="active">
+                <div>
+                  <h2>{product.productName}</h2>
+                </div>
+              </NavLink>
+              <p>Description: {product.description}</p>
+              <p>Price: {product.price}</p>
+              <img src={product.imageUrl} height="200px" width="250px" />
+              <button
+                type="button"
+                onClick={async () => {
+                  await addToCart(props.cart.id, product.id, 1)
+                  await props.fetchCart()
+                }}
+              >
+                Add to Cart
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     )
   } else {

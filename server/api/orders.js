@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const {Op} = require('sequelize')
-const {Order, Product, OrderItem} = require('../db/models')
+const {Order, Product} = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -64,15 +64,13 @@ router.get('/cart', async (req, res, next) => {
   }
 })
 
-router.put('/user/:userId', async (req, res, next) => {
+router.put('/add/:orderId', async (req, res, next) => {
   try {
-    const userId = req.params.userId
+    const orderId = req.params.orderId
     const order = await Order.findOne({
-      where: {
-        userId: userId,
-        status: {
-          [Op.or]: ['cartEmpty', 'cartNotEmpty']
-        }
+      where: {id: orderId},
+      status: {
+        [Op.or]: ['cartEmpty', 'cartNotEmpty']
       }
     })
 
@@ -81,21 +79,39 @@ router.put('/user/:userId', async (req, res, next) => {
     const product = await Product.findOne({
       where: {id: productId}
     })
-    // console.log(
-    //   'userId:',
-    //   userId,
-    //   'productId:',
-    //   productId,
-    //   'quantity:',
-    //   quantity
-    // )
-    // console.log(order)
     await order.addProduct(product, {
       through: {
         quantity: quantity
       }
     })
     res.send('item added to cart')
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.delete('/delete', async (req, res, next) => {
+  try {
+    const productId = req.body.productId
+    const orderId = req.body.orderId
+
+    const order = await Order.findOne({
+      where: {id: orderId},
+      status: {
+        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+      }
+    })
+
+    const product = await Product.findOne({
+      where: {id: productId}
+    })
+
+    await order.removeProduct(product, {
+      // through: {
+      //   quantity: 0
+      // }
+    })
+    res.send('item deleted from cart')
   } catch (err) {
     next(err)
   }

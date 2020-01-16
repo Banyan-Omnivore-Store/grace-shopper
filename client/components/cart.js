@@ -1,7 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {fetchCart} from '../store/cart'
+import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
+
+let simpleArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 class Cart extends React.Component {
   componentDidMount() {
@@ -35,7 +37,41 @@ class Cart extends React.Component {
               <div className="cart-item" key={product.id}>
                 <div className="cart-item_name">{product.productName}</div>
                 <div className="cart-item_quantity">
-                  {product.orderItems.quantity}
+                  Quantity:
+                  {product.orderItems.quantity <= 10 ? (
+                    <select
+                      id={product.id}
+                      onChange={async () => {
+                        console.log(
+                          'new qty: ',
+                          document.getElementById(product.id).value
+                        )
+                        await changeQuantityInCart(
+                          this.props.cart.id,
+                          product.id,
+                          document.getElementById(product.id).value
+                        )
+                      }}
+                      defaultValue={product.orderItems.quantity}
+                    >
+                      {simpleArray.map(item => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input defaultValue={product.orderItems.quantity} />
+                  )}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await deleteFromCart(this.props.cart.id, product.id)
+                      await this.props.fetchCart()
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
                 <div className="cart-item_price">{product.price}</div>
                 <img src={product.imageUrl} alt="product image" />
