@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {fetchCart} from '../store/cart'
+import {fetchCart, deleteFromCart} from '../store/cart'
 
 class Cart extends React.Component {
   componentDidMount() {
@@ -32,7 +32,17 @@ class Cart extends React.Component {
               <div className="cart-item" key={product.id}>
                 <div className="cart-item_name">{product.productName}</div>
                 <div className="cart-item_quantity">
+                  Quantity:
                   {product.orderItems.quantity}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await deleteFromCart(this.props.cart.id, product.id)
+                      await this.props.fetchCart()
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
                 <div className="cart-item_price">{product.price}</div>
                 <img src={product.imageUrl} alt="product image" />

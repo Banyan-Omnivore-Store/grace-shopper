@@ -37,20 +37,40 @@ router.put('/add/:orderId', async (req, res, next) => {
     const product = await Product.findOne({
       where: {id: productId}
     })
-    console.log(
-      'orderId:',
-      orderId,
-      'productId:',
-      productId,
-      'quantity:',
-      quantity
-    )
+
     await order.addProduct(product, {
       through: {
         quantity: quantity
       }
     })
     res.send('item added to cart')
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.delete('/delete', async (req, res, next) => {
+  try {
+    const productId = req.body.productId
+    const orderId = req.body.orderId
+
+    const order = await Order.findOne({
+      where: {id: orderId},
+      status: {
+        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+      }
+    })
+
+    const product = await Product.findOne({
+      where: {id: productId}
+    })
+
+    await order.removeProduct(product, {
+      // through: {
+      //   quantity: 0
+      // }
+    })
+    res.send('item deleted from cart')
   } catch (err) {
     next(err)
   }

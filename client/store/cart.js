@@ -36,6 +36,16 @@ export const addToCart = async (orderId, productId, quantity = '1') => {
     console.error(err)
   }
 }
+
+export const deleteFromCart = async (orderId, productId) => {
+  try {
+    await axios.delete(`/api/orders/delete/`, {
+      data: {productId: productId, orderId: orderId}
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
 /**
  * REDUCER
  */
