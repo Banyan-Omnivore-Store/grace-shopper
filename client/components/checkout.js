@@ -58,7 +58,12 @@ class Checkout extends React.Component {
     }
 
     if (this.state.completedOrder.id) {
-      return <CheckoutComplete order={this.state.completedOrder} />
+      return (
+        <CheckoutComplete
+          order={this.state.completedOrder}
+          fetchCart={this.props.fetchCart}
+        />
+      )
     } else if (products.length > 0) {
       subtotal = products.reduce(
         (acc, curr) => acc + curr.price * curr.orderItems.quantity,

@@ -44,6 +44,11 @@ router.put('/order/:orderId', async (req, res, next) => {
         quantity: quantity
       }
     })
+
+    if (order.status === 'cartEmpty') {
+      await order.update({status: 'cartNotEmpty'})
+    }
+
     res.send('item added to cart')
   } catch (err) {
     next(err)

@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const {Op} = require('sequelize')
-const {Order, Product} = require('../db/models')
+const {Order, Product, OrderItem} = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -104,6 +104,7 @@ router.put('/purchase', async (req, res, next) => {
         {
           status: 'purchased',
           shippingInfo: req.body.address,
+          cartTax: Math.round(total * 7) / 100,
           cartSubtotal: Math.round(total * 100) / 100,
           cartTotal: Math.round(total * 107) / 100
         },

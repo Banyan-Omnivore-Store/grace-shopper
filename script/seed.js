@@ -117,7 +117,8 @@ async function seed() {
       products[Math.ceil(Math.random() * products.length)],
       {
         through: {
-          quantity: 1
+          quantity: 1,
+          purchasePrice: 100
         }
       }
     )

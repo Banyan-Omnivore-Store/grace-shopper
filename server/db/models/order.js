@@ -25,6 +25,13 @@ module.exports = db.define('order', {
   },
   cartTotal: {
     type: Sequelize.DECIMAL(10, 2)
+  },
+  cartTax: {
+    type: Sequelize.DECIMAL(10, 2)
+  },
+  orderDate: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW
   }
 })
 
