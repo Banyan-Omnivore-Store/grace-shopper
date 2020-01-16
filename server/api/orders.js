@@ -24,96 +24,23 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-// router.get('/:orderId', async (req, res, next) => {
-//   if (req.user) {
-//     try {
-//       const order = await Order.findByPk(req.params.orderId, {
-//         include: [{model: Product}]
-//       })
+router.get('/:orderId', async (req, res, next) => {
+  if (req.user) {
+    try {
+      const order = await Order.findByPk(req.params.orderId, {
+        include: [{model: Product}]
+      })
 
-//       if (order.userId === req.user.id) {
-//         res.json(order)
-//       } else {
-//         res.status(401).send('Unauthenticated user')
-//       }
-//     } catch (err) {
-//       next(err)
-//     }
-//   } else {
-//     res.status(401).send('Unauthenticated user')
-//   }
-// })
-
-router.get('/cart', async (req, res, next) => {
-  try {
-    const cart = await Order.findOrCreate({
-      where: {
-        userId: req.user.id,
-        status: {
-          [Op.or]: ['cartEmpty', 'cartNotEmpty']
-        }
-      },
-      defaults: {
-        status: 'cartEmpty'
-      },
-      include: [{model: Product}]
-    })
-    res.json(cart[0])
-  } catch (err) {
-    next(err)
-  }
-})
-
-router.put('/add/:orderId', async (req, res, next) => {
-  try {
-    const orderId = req.params.orderId
-    const order = await Order.findOne({
-      where: {id: orderId},
-      status: {
-        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+      if (order.userId === req.user.id) {
+        res.json(order)
+      } else {
+        res.status(401).send('Unauthenticated user')
       }
-    })
-
-    const productId = req.body.productId
-    const quantity = req.body.quantity
-    const product = await Product.findOne({
-      where: {id: productId}
-    })
-    await order.addProduct(product, {
-      through: {
-        quantity: quantity
-      }
-    })
-    res.send('item added to cart')
-  } catch (err) {
-    next(err)
-  }
-})
-
-router.delete('/delete', async (req, res, next) => {
-  try {
-    const productId = req.body.productId
-    const orderId = req.body.orderId
-
-    const order = await Order.findOne({
-      where: {id: orderId},
-      status: {
-        [Op.or]: ['cartEmpty', 'cartNotEmpty']
-      }
-    })
-
-    const product = await Product.findOne({
-      where: {id: productId}
-    })
-
-    await order.removeProduct(product, {
-      // through: {
-      //   quantity: 0
-      // }
-    })
-    res.send('item deleted from cart')
-  } catch (err) {
-    next(err)
+    } catch (err) {
+      next(err)
+    }
+  } else {
+    res.status(401).send('Unauthenticated user')
   }
 })
 
