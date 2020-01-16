@@ -10,7 +10,9 @@ class Checkout extends React.Component {
     this.state = {
       address: '',
       email: '',
-      completedOrder: {}
+      completedOrder: {},
+      error: '',
+      isButtonDisabled: false
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -32,7 +34,9 @@ class Checkout extends React.Component {
 
   async handlePlaceOrder(event, orderId) {
     event.preventDefault()
-    //add logic to validate shipping address and email
+    this.setState({
+      isButtonDisabled: true
+    })
     try {
       const res = await axios.put('/api/orders/purchase', {
         orderId,
@@ -43,7 +47,17 @@ class Checkout extends React.Component {
         completedOrder: res.data
       })
     } catch (err) {
-      console.log(err)
+      if (err.response) {
+        this.setState({
+          isButtonDisabled: false,
+          error: err.response.data
+        })
+      } else {
+        this.setState({
+          isButtonDisabled: false,
+          error: 'Error: Network Error'
+        })
+      }
     }
   }
 
@@ -53,6 +67,8 @@ class Checkout extends React.Component {
     let tax = 0
     let subtotal = 0
     let total = 0
+    let error
+
     if (this.props.cart.products) {
       products = this.props.cart.products
     }
@@ -72,7 +88,9 @@ class Checkout extends React.Component {
 
       tax = Math.round(taxRate * subtotal * 100) / 100
       total = Math.round((tax + subtotal) * 100) / 100
-
+      if (this.state.error) {
+        error = <div>{this.state.error}</div>
+      }
       return (
         <div className="checkout">
           <div className="checkout-info">
@@ -117,7 +135,16 @@ class Checkout extends React.Component {
               ))}
             </div>
             <div className="checkout-place-order">
-              <button type="submit">Place your order</button>
+              <button
+                type="submit"
+                disabled={
+                  this.state.isButtonDisabled ||
+                  !this.state.email ||
+                  !this.state.address
+                }
+              >
+                Place your order
+              </button>
               <div className="checkout-place-order_subtotal">
                 <div className="checkout-place-order_subtotal__label">
                   Subtotal
@@ -136,6 +163,7 @@ class Checkout extends React.Component {
               </div>
             </div>
           </form>
+          {error}
         </div>
       )
     } else {

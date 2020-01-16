@@ -53,7 +53,7 @@ router.put('/purchase', async (req, res, next) => {
     })
     //if an order is already past cartNotEmpty or if it is empty, respond with an error
     if (order.status !== 'cartNotEmpty') {
-      const error = new Error('Cart status error')
+      const error = new Error('Error: Cart status error')
       error.status = 500
       return next(error)
     }
@@ -63,7 +63,9 @@ router.put('/purchase', async (req, res, next) => {
       for (let product of order.products) {
         const actualProduct = await Product.findByPk(product.id)
         if (actualProduct.inventory < product.orderItems.quantity) {
-          const error = new Error('Not enough inventory to complete order')
+          const error = new Error(
+            'Error: Not enough inventory to complete order. Please change quantities'
+          )
           error.status = 500
           return next(error)
         }
@@ -121,7 +123,7 @@ router.put('/purchase', async (req, res, next) => {
       // send updated order to display order confirmation
       res.status(200).json(completedOrder)
     } else {
-      res.status(401).send('You are not the owner of this order')
+      res.status(401).send('Error: You are not the owner of this order')
     }
   } catch (err) {
     next(err)
