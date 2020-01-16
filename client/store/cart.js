@@ -50,7 +50,7 @@ export const deleteFromCart = async (orderId, productId) => {
 //currently this is the same as addToCart, but may be diff once we add incrementing functionality to add to cart?
 export const changeQuantityInCart = async (orderId, productId, quantity) => {
   try {
-    await axios.put(`/api/cart/order/${orderId}`, {
+    await axios.put(`/api/cart/replace/${orderId}`, {
       productId,
       quantity
     })
