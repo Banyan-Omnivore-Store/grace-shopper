@@ -7,5 +7,9 @@ module.exports = db.define('orderItems', {
     validate: {
       min: 1
     }
+  },
+
+  purchasePrice: {
+    type: Sequelize.DECIMAL(10, 2)
   }
 })

@@ -114,7 +114,12 @@ async function seed() {
 
   for (let i = 0; i < orders.length - 2; i++) {
     await orders[i].addProduct(
-      products[Math.ceil(Math.random() * products.length)]
+      products[Math.ceil(Math.random() * products.length)],
+      {
+        through: {
+          quantity: 1
+        }
+      }
     )
   } //associating products w/ categories
 

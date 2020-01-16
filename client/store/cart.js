@@ -29,7 +29,7 @@ export const fetchCart = () => async dispatch => {
 
 export const addToCart = async (userId, productId, quantity = '1') => {
   try {
-    await axios.put(`/api/orders/${userId}`, {
+    await axios.put(`/api/orders/user/${userId}`, {
       productId,
       quantity
     })
