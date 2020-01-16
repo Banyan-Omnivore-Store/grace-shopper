@@ -23,11 +23,11 @@ router.get('/cart', async (req, res, next) => {
   }
 })
 
-router.put('/:userId', async (req, res, next) => {
+router.put('/add/:orderId', async (req, res, next) => {
   try {
-    const userId = req.params.userId
+    const orderId = req.params.orderId
     const order = await Order.findOne({
-      where: {userId: userId},
+      where: {id: orderId},
       status: {
         [Op.or]: ['cartEmpty', 'cartNotEmpty']
       }
@@ -38,8 +38,8 @@ router.put('/:userId', async (req, res, next) => {
       where: {id: productId}
     })
     console.log(
-      'userId:',
-      userId,
+      'orderId:',
+      orderId,
       'productId:',
       productId,
       'quantity:',
@@ -51,6 +51,10 @@ router.put('/:userId', async (req, res, next) => {
       }
     })
     res.send('item added to cart')
+  } catch (err) {
+    next(err)
+  }
+})
 
 router.put('/purchase', async (req, res, next) => {
   try {
@@ -117,7 +121,6 @@ router.put('/purchase', async (req, res, next) => {
     } else {
       res.status(401).send('You are not the owner of this order')
     }
-
   } catch (err) {
     next(err)
   }

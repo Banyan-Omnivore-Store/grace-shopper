@@ -25,8 +25,8 @@ function AllProducts(props) {
             <button
               type="button"
               onClick={async () => {
-                await addToCart(props.user.id, product.id, 1)
-                await fetchCart()
+                await addToCart(props.cart.id, product.id, 1)
+                await props.fetchCart()
               }}
             >
               Add to Cart
