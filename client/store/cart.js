@@ -19,7 +19,7 @@ const getCart = cart => ({type: GET_CART, cart})
  */
 export const fetchCart = () => async dispatch => {
   try {
-    const res = await axios.get(`/api/orders/cart`)
+    const res = await axios.get(`/api/cart`)
     dispatch(getCart(res.data || defaultCart))
   } catch (err) {
     console.error(err)
@@ -28,7 +28,7 @@ export const fetchCart = () => async dispatch => {
 
 export const addToCart = async (orderId, productId, quantity = '1') => {
   try {
-    await axios.put(`/api/orders/add/${orderId}`, {
+    await axios.put(`/api/cart/order/${orderId}`, {
       productId,
       quantity
     })
@@ -39,7 +39,7 @@ export const addToCart = async (orderId, productId, quantity = '1') => {
 
 export const deleteFromCart = async (orderId, productId) => {
   try {
-    await axios.delete(`/api/orders/delete/`, {
+    await axios.delete(`/api/cart/product`, {
       data: {productId: productId, orderId: orderId}
     })
   } catch (err) {
@@ -50,7 +50,7 @@ export const deleteFromCart = async (orderId, productId) => {
 //currently this is the same as addToCart, but may be diff once we add incrementing functionality to add to cart?
 export const changeQuantityInCart = async (orderId, productId, quantity) => {
   try {
-    await axios.put(`/api/orders/add/${orderId}`, {
+    await axios.put(`/api/cart/order/${orderId}`, {
       productId,
       quantity
     })
