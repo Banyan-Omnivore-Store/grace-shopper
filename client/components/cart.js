@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
 
-let simpleArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let simpleArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 class Cart extends React.Component {
   componentDidMount() {
@@ -16,7 +16,6 @@ class Cart extends React.Component {
     if (this.props.cart.products) {
       products = this.props.cart.products
     }
-    console.log(products)
     if (products.length > 0) {
       let totalPrice =
         Math.round(
@@ -36,16 +35,26 @@ class Cart extends React.Component {
             {this.props.cart.products.map(product => (
               <div className="cart-item" key={product.id}>
                 <div className="cart-item_name">{product.productName}</div>
+                <div className="cart-item_inventory">
+                  Inventory:{product.inventory}
+                </div>
                 <div className="cart-item_quantity">
                   Quantity:
                   {product.orderItems.quantity <= 10 ? (
                     <select
                       id={product.id}
                       onChange={async () => {
-                        console.log(
-                          'new qty: ',
-                          document.getElementById(product.id).value
-                        )
+                        //wanted to pull this into a class method, but... it needs some things
+                        if (
+                          document.getElementById(product.id).value >
+                          product.inventory
+                        ) {
+                          alert(
+                            'not enough inventory, your cart has been updated to the max avail.'
+                          )
+                          document.getElementById(product.id).value =
+                            product.inventory
+                        }
                         await changeQuantityInCart(
                           this.props.cart.id,
                           product.id,
@@ -61,7 +70,28 @@ class Cart extends React.Component {
                       ))}
                     </select>
                   ) : (
-                    <input defaultValue={product.orderItems.quantity} />
+                    <input
+                      defaultValue={product.orderItems.quantity}
+                      id={product.id}
+                      onChange={async () => {
+                        //wanted to pull this into a class method, but... it needs some things
+                        if (
+                          document.getElementById(product.id).value >
+                          product.inventory
+                        ) {
+                          alert(
+                            'not enough inventory, your cart has been updated to the max avail.'
+                          )
+                          document.getElementById(product.id).value =
+                            product.inventory
+                        }
+                        await changeQuantityInCart(
+                          this.props.cart.id,
+                          product.id,
+                          document.getElementById(product.id).value
+                        )
+                      }}
+                    />
                   )}
                   <button
                     type="button"
@@ -74,7 +104,11 @@ class Cart extends React.Component {
                   </button>
                 </div>
                 <div className="cart-item_price">{product.price}</div>
-                <img src={product.imageUrl} alt="product image" />
+                <img
+                  src={product.imageUrl}
+                  alt="product image"
+                  height="200px"
+                />
               </div>
             ))}
           </div>

@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const {Op} = require('sequelize')
-const {Order, Product} = require('../db/models')
+const {Order, Product, OrderItem} = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -24,14 +24,15 @@ router.get('/', async (req, res, next) => {
 })
 
 router.put('/order/:orderId', async (req, res, next) => {
-  //need to UPDATE THUNKS HERE from /add
   try {
-    const orderId = req.params.orderId
     const order = await Order.findOne({
-      where: {id: orderId},
+      where: {id: req.params.orderId},
       status: {
         [Op.or]: ['cartEmpty', 'cartNotEmpty']
       }
+    })
+    const prevQty = await OrderItem.findOne({
+      where: {orderId: req.params.orderId, productId: req.body.productId}
     })
 
     const productId = req.body.productId
@@ -39,19 +40,64 @@ router.put('/order/:orderId', async (req, res, next) => {
     const product = await Product.findOne({
       where: {id: productId}
     })
-    await order.addProduct(product, {
-      through: {
-        quantity: quantity
+
+    if (prevQty) {
+      if (parseInt(quantity, 10) + prevQty.quantity > product.quantity) {
+        res.send('item not added to cart, not enough inventory')
+        alert('not enough inventory')
       }
-    })
+      await order.addProduct(product, {
+        through: {
+          quantity: parseInt(quantity, 10) + prevQty.quantity
+        }
+      })
+    } else {
+      if (quantity > product.quantity) {
+        res.send('item not added to cart, not enough inventory')
+        alert('not enough inventory')
+      }
+      await order.addProduct(product, {
+        through: {
+          quantity: quantity
+        }
+      })
+    }
     res.send('item added to cart')
   } catch (err) {
     next(err)
   }
 })
 
+router.put('/replace/:orderId', async (req, res, next) => {
+  try {
+    const order = await Order.findOne({
+      where: {id: req.params.orderId},
+      status: {
+        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+      }
+    })
+    const productId = req.body.productId
+    const quantity = req.body.quantity
+    const product = await Product.findOne({
+      where: {id: productId}
+    })
+    if (quantity > product.quantity) {
+      res.send('item not added to cart, not enough inventory')
+      alert('not enough inventory')
+    } else {
+      await order.addProduct(product, {
+        through: {
+          quantity: quantity
+        }
+      })
+      res.send('item added to cart')
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.delete('/product', async (req, res, next) => {
-  //UPDATE THUNK from /delete
   try {
     const productId = req.body.productId
     const orderId = req.body.orderId
