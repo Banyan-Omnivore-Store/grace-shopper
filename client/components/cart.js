@@ -1,7 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {fetchCart, deleteFromCart} from '../store/cart'
+import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
+
+let simpleArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 class Cart extends React.Component {
   componentDidMount() {
@@ -33,7 +35,31 @@ class Cart extends React.Component {
                 <div className="cart-item_name">{product.productName}</div>
                 <div className="cart-item_quantity">
                   Quantity:
-                  {product.orderItems.quantity}
+                  {product.orderItems.quantity <= 10 ? (
+                    <select
+                      id={product.id}
+                      onChange={async () => {
+                        console.log(
+                          'new qty: ',
+                          document.getElementById(product.id).value
+                        )
+                        await changeQuantityInCart(
+                          this.props.cart.id,
+                          product.id,
+                          document.getElementById(product.id).value
+                        )
+                      }}
+                      defaultValue={product.orderItems.quantity}
+                    >
+                      {simpleArray.map(item => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input defaultValue={product.orderItems.quantity} />
+                  )}
                   <button
                     type="button"
                     onClick={async () => {
