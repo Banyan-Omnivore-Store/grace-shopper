@@ -2,7 +2,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {fetchSingleProduct, createNewReviewThunk} from '../store/product'
-// import { createNewReviewThunk } from '../store/product'
 
 class UnconnectedSingleProduct extends React.Component {
   constructor() {
@@ -161,18 +160,21 @@ class UnconnectedSingleProduct extends React.Component {
             <button
               type="submit"
               onClick={async () => {
-                this.addReviewButtonClickHandler(
-                  this.props.user,
-                  this.props.singleProduct.id,
-                  this.state.reviewRating,
-                  this.state.reviewText
-                )
-                await this.props.fetchSingleProduct(
-                  this.props.match.params.productId
-                )
-                this.setState({reviewRating: 1})
-                this.setState({reviewText: ''})
-                console.log('state', this.state)
+                if (this.props.user.firstName) {
+                  this.addReviewButtonClickHandler(
+                    this.props.user,
+                    this.props.singleProduct.id,
+                    this.state.reviewRating,
+                    this.state.reviewText
+                  )
+                  await this.props.fetchSingleProduct(
+                    this.props.match.params.productId
+                  )
+                  this.setState({reviewRating: 1})
+                  this.setState({reviewText: ''})
+                } else {
+                  alert('Please log in to post a review!')
+                }
               }}
             >
               Add Your Review
