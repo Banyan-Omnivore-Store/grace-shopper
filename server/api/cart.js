@@ -40,15 +40,20 @@ router.put('/order/:orderId', async (req, res, next) => {
       const product = await Product.findOne({
         where: {id: productId}
       })
-      let index = req.session.cart.products.reduce(
-        (finalIndex, item, currentIndex) => {
-          if (item.product.id === productId) {
-            finalIndex = currentIndex
-          }
-          return finalIndex
-        },
-        -1
-      )
+      let index
+      if (!req.session.cart.products) {
+        index = -1
+      } else {
+        index = req.session.cart.products.reduce(
+          (finalIndex, item, currentIndex) => {
+            if (item.product.id === productId) {
+              finalIndex = currentIndex
+            }
+            return finalIndex
+          },
+          -1
+        )
+      }
 
       //if the product already exists in the cart index !==-1
       if (index !== -1) {
