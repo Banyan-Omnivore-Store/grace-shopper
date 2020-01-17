@@ -24,14 +24,14 @@ class UnconnectedSingleProduct extends React.Component {
   }
 
   async addToCartButtonClickHandler(cartId, productId, quantity) {
-    console.log(
-      'user',
-      this.props.user,
-      'productId',
-      productId,
-      'quantity',
-      quantity
-    )
+    // console.log(
+    //   'user',
+    //   this.props.user,
+    //   'productId',
+    //   productId,
+    //   'quantity',
+    //   quantity
+    // )
     await addToCart(cartId, productId, quantity)
   }
 
