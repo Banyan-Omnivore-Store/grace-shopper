@@ -37,26 +37,35 @@ class Checkout extends React.Component {
     this.setState({
       isButtonDisabled: true
     })
-    try {
-      const res = await axios.put('/api/orders/purchase', {
-        orderId,
-        address: this.state.address,
-        payment: this.state.email
-      })
+
+    let emailValidate = /^\w+@\w+\.\w+$/
+    if (!this.state.email.match(emailValidate)) {
       this.setState({
-        completedOrder: res.data
+        error: 'Please enter a valid email',
+        isButtonDisabled: false
       })
-    } catch (err) {
-      if (err.response) {
-        this.setState({
-          isButtonDisabled: false,
-          error: err.response.data
+    } else {
+      try {
+        const res = await axios.put('/api/orders/purchase', {
+          orderId,
+          address: this.state.address,
+          payment: this.state.email
         })
-      } else {
         this.setState({
-          isButtonDisabled: false,
-          error: 'Error: Network Error'
+          completedOrder: res.data
         })
+      } catch (err) {
+        if (err.response) {
+          this.setState({
+            isButtonDisabled: false,
+            error: err.response.data
+          })
+        } else {
+          this.setState({
+            isButtonDisabled: false,
+            error: 'Error: Network Error'
+          })
+        }
       }
     }
   }
