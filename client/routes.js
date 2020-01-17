@@ -41,11 +41,11 @@ class Routes extends Component {
           path="/products"
           render={() => <AllProducts products={this.props.products} />}
         />
+        <Route path="/cart" component={Cart} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
-            <Route path="/cart" component={Cart} />
             <Route path="/checkout" component={Checkout} />
             <Route path="/orders/:orderId" component={SingleOrder} />
             <Route path="/orders" component={AllOrders} />
