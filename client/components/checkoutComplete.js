@@ -36,6 +36,7 @@ class CheckoutComplete extends React.Component {
               </div>
               <img
                 src={product.imageUrl}
+                height="200px"
                 className="checkout-complete-item_field"
               />
             </div>
