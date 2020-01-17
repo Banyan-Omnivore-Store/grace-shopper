@@ -6,13 +6,13 @@ import {
   Login,
   Signup,
   UserHome,
-  Cart,
   Checkout,
   AllProducts,
   SingleProduct,
   AllOrders,
   SingleOrder,
-  UserProfile
+  UserProfile,
+  MasterCart
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
@@ -41,7 +41,7 @@ class Routes extends Component {
           path="/products"
           render={() => <AllProducts products={this.props.products} />}
         />
-        <Route path="/cart" component={Cart} />
+        <Route path="/cart" component={MasterCart} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
