@@ -46,18 +46,11 @@ router.put('/order/:orderId', async (req, res, next) => {
         res.send('item not added to cart, not enough inventory')
         alert('not enough inventory')
       }
-    })
-
-    
-
       await order.addProduct(product, {
         through: {
           quantity: parseInt(quantity, 10) + prevQty.quantity
         }
       })
-    if (order.status === 'cartEmpty') {
-      await order.update({status: 'cartNotEmpty'})
-    }
     } else {
       if (quantity > product.quantity) {
         res.send('item not added to cart, not enough inventory')
@@ -68,6 +61,9 @@ router.put('/order/:orderId', async (req, res, next) => {
           quantity: quantity
         }
       })
+      if (order.status === 'cartEmpty') {
+        await order.update({status: 'cartNotEmpty'})
+      }
     }
     res.send('item added to cart')
   } catch (err) {
