@@ -22,7 +22,8 @@ class Checkout extends React.Component {
   componentDidMount() {
     this.props.fetchCart()
     this.setState({
-      address: this.props.user.address
+      address: this.props.user.address,
+      email: this.props.user.email
     })
   }
 
