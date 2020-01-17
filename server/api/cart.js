@@ -12,7 +12,6 @@ router.get('/', async (req, res, next) => {
     }
     res.send(req.session.cart)
   } else {
-    console.log('user req.session: ', req.session)
     try {
       const cart = await Order.findOrCreate({
         where: {
@@ -38,29 +37,14 @@ router.put('/order/:orderId', async (req, res, next) => {
     try {
       const productId = req.body.productId
       const quantity = req.body.quantity
-      //   const prevQty = await OrderItem.findOne({
-      //     where: {orderId: req.params.orderId, productId: req.body.productId}
-      //   })
       const product = await Product.findOne({
         where: {id: productId}
       })
-      //   if (false) {
-      //     if (parseInt(quantity, 10) + prevQty.quantity > product.quantity) {
-      //       res.send('item not added to cart, not enough inventory')
-      //       alert('not enough inventory')
-      //     }
-      //     await order.addProduct(product, {
-      //       through: {
-      //         quantity: parseInt(quantity, 10) + prevQty.quantity
-      //       }
-      //     })
-      //   } else
-      if (quantity > product.quantity) {
-        res.send('item not added to cart, not enough inventory')
-        alert('not enough inventory')
+      let index
+      if (!req.session.cart.products) {
+        index = -1
       } else {
-        console.log('REQ SESSION!!!!', req.session)
-        let index = req.session.cart.products.reduce(
+        index = req.session.cart.products.reduce(
           (finalIndex, item, currentIndex) => {
             if (item.product.id === productId) {
               finalIndex = currentIndex
@@ -69,16 +53,31 @@ router.put('/order/:orderId', async (req, res, next) => {
           },
           -1
         )
-        console.log('INDEX OF FOUND ITEM!!!:', index)
-        if (index === -1) {
-          req.session.cart.products.push({
-            product: product,
-            quantity: quantity
-          })
+      }
+
+      //if the product already exists in the cart index !==-1
+      if (index !== -1) {
+        //if the new desired quantity exceeds inventory, do not add, send error alert
+        if (
+          quantity + req.session.cart.products[index].quantity >
+          product.inventory
+        ) {
+          res.send('item not added to cart, not enough inventory')
+          //else there is enough space so add the quantity to existing cart count
         } else {
           req.session.cart.products[index].quantity =
             quantity + req.session.cart.products[index].quantity
+          res.send('item added to cart')
         }
+        //else if the product doesn't exist in the cart,
+        //just check to see if the quantity being added > inventory
+      } else if (quantity > product.inventory) {
+        res.send('item not added to cart, not enough inventory')
+      } else {
+        req.session.cart.products.push({
+          product: product,
+          quantity: quantity
+        })
         res.send('item added to cart')
       }
     } catch (err) {
@@ -105,7 +104,7 @@ router.put('/order/:orderId', async (req, res, next) => {
       if (prevQty) {
         if (parseInt(quantity, 10) + prevQty.quantity > product.quantity) {
           res.send('item not added to cart, not enough inventory')
-          alert('not enough inventory')
+          console.error('not enough inventory')
         }
         await order.addProduct(product, {
           through: {
@@ -115,7 +114,7 @@ router.put('/order/:orderId', async (req, res, next) => {
       } else {
         if (quantity > product.quantity) {
           res.send('item not added to cart, not enough inventory')
-          alert('not enough inventory')
+          console.error('not enough inventory')
         }
         await order.addProduct(product, {
           through: {
@@ -134,31 +133,66 @@ router.put('/order/:orderId', async (req, res, next) => {
 })
 
 router.put('/replace/:orderId', async (req, res, next) => {
-  try {
-    const order = await Order.findOne({
-      where: {id: req.params.orderId},
-      status: {
-        [Op.or]: ['cartEmpty', 'cartNotEmpty']
+  if (!req.user) {
+    try {
+      const productId = req.body.productId
+      const quantity = req.body.quantity
+      const product = await Product.findOne({
+        where: {id: productId}
+      })
+      let index = req.session.cart.products.reduce(
+        (finalIndex, item, currentIndex) => {
+          if (item.product.id === productId) {
+            finalIndex = currentIndex
+          }
+          return finalIndex
+        },
+        -1
+      )
+
+      //if the product already exists in the cart index !==-1 (it should b/c we're replacing qty)
+      if (index !== -1) {
+        //if the new desired quantity exceeds inventory, do not add, send error alert
+        if (quantity > product.inventory) {
+          res.send('item not added to cart, not enough inventory')
+          //else there is enough space set the quantity as the new quantity
+        } else {
+          req.session.cart.products[index].quantity = quantity
+          res.send('item added to cart')
+        }
+        //else if the product doesn't exist in the cart,
+        //just check to see if the quantity being added > inventory
       }
-    })
-    const productId = req.body.productId
-    const quantity = req.body.quantity
-    const product = await Product.findOne({
-      where: {id: productId}
-    })
-    if (quantity > product.quantity) {
-      res.send('item not added to cart, not enough inventory')
-      alert('not enough inventory')
-    } else {
-      await order.addProduct(product, {
-        through: {
-          quantity: quantity
+    } catch (err) {
+      next(err)
+    }
+  } else {
+    try {
+      const order = await Order.findOne({
+        where: {id: req.params.orderId},
+        status: {
+          [Op.or]: ['cartEmpty', 'cartNotEmpty']
         }
       })
-      res.send('item added to cart')
+      const productId = req.body.productId
+      const quantity = req.body.quantity
+      const product = await Product.findOne({
+        where: {id: productId}
+      })
+      if (quantity > product.quantity) {
+        res.send('item not added to cart, not enough inventory')
+        console.error('not enough inventory')
+      } else {
+        await order.addProduct(product, {
+          through: {
+            quantity: quantity
+          }
+        })
+        res.send('item added to cart')
+      }
+    } catch (err) {
+      next(err)
     }
-  } catch (err) {
-    next(err)
   }
 })
 
