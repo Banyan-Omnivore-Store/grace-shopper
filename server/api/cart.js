@@ -2,18 +2,23 @@
 /* eslint-disable complexity */
 const router = require('express').Router()
 const {Op} = require('sequelize')
-const {Order, Product, OrderItem} = require('../db/models')
+const {User, Order, Product, OrderItem} = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
+  // if user is a guest
   if (!req.user) {
+    //if user is a guest and does not have an active session, initialize an empty cart on the session object
     if (!req.session.cart) {
       req.session.cart = {products: []}
     }
-    res.send(req.session.cart)
+    //send guest their newly initilaized or existing cart
+    res.json(req.session.cart)
+    //if the user is a member
   } else {
+    let cart
     try {
-      const cart = await Order.findOrCreate({
+      cart = await Order.findOrCreate({
         where: {
           userId: req.user.id,
           status: {
@@ -25,9 +30,32 @@ router.get('/', async (req, res, next) => {
         },
         include: [{model: Product}]
       })
-      res.json(cart[0])
-    } catch (err) {
+    } catch {
       next(err)
+    }
+    cart = cart[0]
+    if (req.session.cart) {
+      if (req.session.cart.products.length > 0) {
+        for (let elem of req.session.cart.products) {
+          try {
+            const product = await Product.findByPk(elem.product.id)
+            await cart.addProduct(product, {
+              through: {
+                quantity: elem.quantity
+              }
+            })
+          } catch (err) {
+            next(err)
+          }
+        }
+        delete req.session.cart
+        res.json(cart)
+      } else {
+        delete req.session.cart
+        res.json(cart)
+      }
+    } else {
+      res.json(cart)
     }
   }
 })
@@ -44,6 +72,7 @@ router.put('/order/:orderId', async (req, res, next) => {
       if (!req.session.cart.products) {
         index = -1
       } else {
+
         index = req.session.cart.products.reduce(
           (finalIndex, item, currentIndex) => {
             if (item.product.id === productId) {

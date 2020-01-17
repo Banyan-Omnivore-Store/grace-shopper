@@ -2,6 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
+import {fetchCart} from '../store/cart'
+import history from '../history'
 
 /**
  * COMPONENT
@@ -59,12 +61,14 @@ const mapSignup = state => {
 
 const mapDispatch = dispatch => {
   return {
-    handleSubmit(evt) {
+    async handleSubmit(evt) {
       evt.preventDefault()
       const formName = evt.target.name
       const email = evt.target.email.value
       const password = evt.target.password.value
-      dispatch(auth(email, password, formName))
+      await dispatch(auth(email, password, formName))
+      await dispatch(fetchCart())
+      history.push('/home')
     }
   }
 }
