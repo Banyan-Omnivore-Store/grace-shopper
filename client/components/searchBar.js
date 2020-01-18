@@ -6,7 +6,7 @@ import {
   Route,
   /*BrowserRouter as Router, */ Link
 } from 'react-router-dom'
-import {productSearchResults} from './productSearchResults'
+// import {productSearchResults} from './productSearchResults'
 
 class UnconnectedSearchBar extends React.Component {
   constructor() {
@@ -45,11 +45,11 @@ class UnconnectedSearchBar extends React.Component {
     return (
       // <Router>
       <div className="wrapper">
-        <Route
+        {/* <Route
           exact
           path="/searchResults/:searchVal"
           component={productSearchResults}
-        />
+        /> */}
         <div className="search_capabilities">
           <input
             type="text"
