@@ -22,10 +22,10 @@ import {fetchCart} from './store/cart.js'
  * COMPONENT
  */
 class Routes extends Component {
-  componentDidMount() {
-    this.props.loadInitialData()
-    this.props.fetchProducts()
-    this.props.fetchCart()
+  async componentDidMount() {
+    await this.props.loadInitialData()
+    await this.props.fetchProducts()
+    await this.props.fetchCart()
   }
 
   render() {
