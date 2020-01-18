@@ -2,7 +2,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {fetchSingleProduct, createNewReviewThunk} from '../store/product'
-// import { createNewReviewThunk } from '../store/product'
+import {addToCart, fetchCart} from '../store/cart'
 
 class UnconnectedSingleProduct extends React.Component {
   constructor() {
@@ -23,8 +23,16 @@ class UnconnectedSingleProduct extends React.Component {
     this.props.fetchSingleProduct(productId)
   }
 
-  addToCartButtonClickHandler(productId, quantity) {
-    console.log(productId, Number(quantity))
+  async addToCartButtonClickHandler(cartId, productId, quantity) {
+    // console.log(
+    //   'user',
+    //   this.props.user,
+    //   'productId',
+    //   productId,
+    //   'quantity',
+    //   quantity
+    // )
+    await addToCart(cartId, productId, quantity)
   }
 
   quantityChangeHandler(event) {
@@ -113,6 +121,7 @@ class UnconnectedSingleProduct extends React.Component {
             type="button"
             onClick={() =>
               this.addToCartButtonClickHandler(
+                this.props.cart.id,
                 this.props.singleProduct.id,
                 this.state.value
               )
@@ -161,18 +170,21 @@ class UnconnectedSingleProduct extends React.Component {
             <button
               type="submit"
               onClick={async () => {
-                this.addReviewButtonClickHandler(
-                  this.props.user,
-                  this.props.singleProduct.id,
-                  this.state.reviewRating,
-                  this.state.reviewText
-                )
-                await this.props.fetchSingleProduct(
-                  this.props.match.params.productId
-                )
-                this.setState({reviewRating: 1})
-                this.setState({reviewText: ''})
-                console.log('state', this.state)
+                if (this.props.user.firstName) {
+                  this.addReviewButtonClickHandler(
+                    this.props.user,
+                    this.props.singleProduct.id,
+                    this.state.reviewRating,
+                    this.state.reviewText
+                  )
+                  await this.props.fetchSingleProduct(
+                    this.props.match.params.productId
+                  )
+                  this.setState({reviewRating: 1})
+                  this.setState({reviewText: ''})
+                } else {
+                  alert('Please log in to post a review!')
+                }
               }}
             >
               Add Your Review
@@ -189,7 +201,8 @@ class UnconnectedSingleProduct extends React.Component {
 const mapStateToProps = state => {
   return {
     singleProduct: state.product.singleProduct,
-    user: state.user
+    user: state.user,
+    cart: state.cart
   }
 }
 
@@ -197,7 +210,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId)),
     createReview: (userId, productId, rating, reviewText) =>
-      dispatch(createNewReviewThunk(userId, productId, rating, reviewText))
+      dispatch(createNewReviewThunk(userId, productId, rating, reviewText)),
+    fetchCart: () => dispatch(fetchCart())
   }
 }
 

@@ -10,6 +10,10 @@ const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
+
+const nodemailer = require('nodemailer')
+// import mailer from './mailer'
+
 module.exports = app
 
 // This is a global Mocha hook, used for resource cleanup.
@@ -78,6 +82,43 @@ const createApp = () => {
       next(err)
     } else {
       next()
+    }
+  })
+
+  //nodemail route
+  app.post('/orders/responseEmail', (req, res, next) => {
+    let firstName = req.body.firstName
+    let email = req.body.email
+    let order = req.body.order
+    console.log('order', order)
+
+    let transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'omnivoreStoreGraceShopper@gmail.com',
+        pass: 'omnivoreStore123'
+      }
+    })
+    // let prductArr =
+    // eslint-disable-next-line react/react-in-jsx-scope
+    let mailContent = `<h1>Hi ${firstName}!</h1><p>Thank you for your order! </p><p>Please access your full receipt at http://localhost:8080/orders at any time. Come back soon! </p><p>The Omnivore Store Team</p>`
+    let mailOptions = {
+      from: 'omnivoreStoreGraceShopper@gmail.com',
+      to: 'e.k.tilden@gmail.com',
+      subject: 'Thank You For Your Order!',
+      // text: `I wonder.`,
+      html: mailContent
+    }
+    try {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error)
+        } else {
+          res.sendStatus(200)
+        }
+      })
+    } catch (err) {
+      next(err)
     }
   })
 

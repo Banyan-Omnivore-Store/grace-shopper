@@ -55,6 +55,18 @@ class Checkout extends React.Component {
         this.setState({
           completedOrder: res.data
         })
+
+        //email confirmation of order
+        let firstName = this.props.user.firstName
+        let email = this.state.email
+        let order = this.state.completedOrder
+
+        let emailObj = await axios.post('/orders/responseEmail', {
+          firstName: firstName,
+          email: email,
+          order: order
+        })
+        //
       } catch (err) {
         if (err.response) {
           this.setState({

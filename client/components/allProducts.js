@@ -4,6 +4,7 @@ import {NavLink, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {setProducts, fetchProducts} from '../store/products'
 import {addToCart, fetchCart} from '../store/cart'
+import SearchBar from './searchBar'
 
 //export functional component which maps through props.products
 function AllProducts(props) {
@@ -12,6 +13,7 @@ function AllProducts(props) {
   } else if (props.products) {
     return (
       <div className="wrapper">
+        <SearchBar />
         <div className="productList">
           {props.products.map(product => (
             <div key={product.id} className="product">
