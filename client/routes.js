@@ -17,6 +17,7 @@ import {
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
 import {fetchCart} from './store/cart.js'
+import {StripeProvider, Elements} from 'react-stripe-elements'
 
 /**
  * COMPONENT
@@ -46,7 +47,13 @@ class Routes extends Component {
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
-            <Route path="/checkout" component={Checkout} />
+            <Route path="/checkout">
+              <StripeProvider apiKey="pk_test_nXMbO0tEFvLJso12RaW4bpTD005h7qJ60z">
+                <Elements>
+                  <Checkout />
+                </Elements>
+              </StripeProvider>
+            </Route>
             <Route path="/orders/:orderId" component={SingleOrder} />
             <Route path="/orders" component={AllOrders} />
             <Route path="/profile" component={UserProfile} />
