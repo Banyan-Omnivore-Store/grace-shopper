@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const {Op} = require('sequelize')
 const {Order, Product, OrderItem} = require('../db/models')
+const stripe = require('stripe')('sk_test_zsN4YCSbJveiJszcG6fk8RSH00voXhddzN')
+
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -45,7 +47,7 @@ router.get('/:orderId', async (req, res, next) => {
 })
 
 router.put('/purchase', async (req, res, next) => {
-  //req.body includes orderId, shipping and email
+  //req.body includes orderId, shipping, email and token
   try {
     let total = 0
     const order = await Order.findByPk(req.body.orderId, {
@@ -70,6 +72,15 @@ router.put('/purchase', async (req, res, next) => {
           return next(error)
         }
       }
+
+      //sends credit card information to stripe
+      await stripe.charges.create({
+        amount: 999,
+        currency: 'usd',
+        description: 'Example Charge',
+        source: req.body.token,
+        metadata: {order_id: req.body.orderId}
+      })
 
       //change inventory to reflect purchase and start adding price to get total
       for (let product of order.products) {

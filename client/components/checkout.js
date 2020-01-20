@@ -3,6 +3,32 @@ import {connect} from 'react-redux'
 import {fetchCart} from '../store/cart'
 import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
+import {CardElement, injectStripe} from 'react-stripe-elements'
+
+const styles = {
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column'
+}
+
+const createOptions = () => {
+  return {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        fontFamily: 'Open Sans, sans-serif',
+        letterSpacing: '0.025em',
+        '::placeholder': {
+          color: '#aab7c4'
+        }
+      },
+      invalid: {
+        color: '#c23d4b'
+      }
+    }
+  }
+}
 
 class Checkout extends React.Component {
   constructor(props) {
@@ -16,11 +42,12 @@ class Checkout extends React.Component {
     }
 
     this.handleChange = this.handleChange.bind(this)
+    this.handleCardChange = this.handleCardChange.bind(this)
     this.handlePlaceOrder = this.handlePlaceOrder.bind(this)
   }
 
-  componentDidMount() {
-    this.props.fetchCart()
+  async componentDidMount() {
+    await this.props.fetchCart()
     this.setState({
       address: this.props.user.address || '',
       email: this.props.user.email
@@ -31,6 +58,14 @@ class Checkout extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     })
+  }
+
+  handleCardChange(event) {
+    if (event.error) {
+      this.setState({
+        error: event.error.message
+      })
+    }
   }
 
   async handlePlaceOrder(event, orderId) {
@@ -47,10 +82,13 @@ class Checkout extends React.Component {
       })
     } else {
       try {
+        //creates token for stripe payment
+        const token = await this.props.stripe.createToken()
         const res = await axios.put('/api/orders/purchase', {
           orderId,
           address: this.state.address,
-          payment: this.state.email
+          payment: this.state.email,
+          token: token.token.id
         })
         this.setState({
           completedOrder: res.data
@@ -156,7 +194,7 @@ class Checkout extends React.Component {
                 </div>
               ))}
             </div>
-            <div className="checkout-place-order">
+            <div className="checkout-place-order" style={styles}>
               <button
                 type="submit"
                 disabled={
@@ -183,6 +221,11 @@ class Checkout extends React.Component {
                 <div className="checkout-place-order_total__label">Total</div>
                 <div className="checkout-place-order_total__value">{total}</div>
               </div>
+              <CardElement
+                name="card"
+                onChange={this.handleCardChange}
+                {...createOptions()}
+              />
             </div>
           </form>
           {error}
@@ -205,4 +248,6 @@ const mapDispatchToProps = dispatch => ({
   fetchCart: () => dispatch(fetchCart())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  injectStripe(Checkout)
+)
