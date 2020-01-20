@@ -97,6 +97,7 @@ router.put('/order/:orderId', async (req, res, next) => {
       } else if (quantity > product.inventory) {
         res.send('item not added to cart, not enough inventory')
       } else {
+        console.log('req.session', req.session)
         req.session.cart.products.push({
           product: product,
           quantity: quantity
@@ -211,25 +212,51 @@ router.put('/replace/:orderId', async (req, res, next) => {
 })
 
 router.delete('/product', async (req, res, next) => {
-  try {
-    const productId = req.body.productId
-    const orderId = req.body.orderId
+  if (!req.user) {
+    try {
+      console.log('req.body:', req.body)
+      const productId = req.body.productId
+      const orderId = req.body.orderId
+      console.log('productId:', productId, 'orderId:', orderId)
+      console.log('current cart', req.session.cart)
+      //remove the object within the products array that matches the given productId
+      let index = req.session.cart.products.reduce(
+        (finalIndex, item, currentIndex) => {
+          if (item.product.id === productId) {
+            finalIndex = currentIndex
+          }
+          return finalIndex
+        },
+        -1
+      )
+      console.log('index:', index)
+      req.session.cart.products.splice(index, 1)
+      console.log('updated cart', req.session.cart)
+      res.send('item deleted from guest cart')
+    } catch (err) {
+      next(err)
+    }
+  } else {
+    try {
+      const productId = req.body.productId
+      const orderId = req.body.orderId
 
-    const order = await Order.findOne({
-      where: {id: orderId, status: 'cart'}
-    })
+      const order = await Order.findOne({
+        where: {id: orderId, status: 'cart'}
+      })
 
-    const product = await Product.findOne({
-      where: {id: productId}
-    })
+      const product = await Product.findOne({
+        where: {id: productId}
+      })
 
-    await order.removeProduct(product, {
-      // through: {
-      //   quantity: 0
-      // }
-    })
-    res.send('item deleted from cart')
-  } catch (err) {
-    next(err)
+      await order.removeProduct(product, {
+        // through: {
+        //   quantity: 0
+        // }
+      })
+      res.send('item deleted from cart')
+    } catch (err) {
+      next(err)
+    }
   }
 })
