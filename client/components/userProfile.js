@@ -2,6 +2,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {me} from '../store/user'
+import axios from 'axios'
 
 //export functional component which maps through props.products
 class UserProfile extends React.Component {
@@ -68,11 +69,21 @@ class UserProfile extends React.Component {
       })
     } else {
       try {
-        // await axios
-        me()
+        await axios.put(`/api/users/${this.props.user.id}`, {
+          userId: this.props.user.id,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.email,
+          address: this.state.address
+        })
+        await this.props.me()
         this.setState({
-          error: 'Please enter a valid email',
-          isSubmitDisabled: false
+          isSubmitDisabled: false,
+          firstName: this.props.user.firstName,
+          lastName: this.props.user.lastName,
+          email: this.props.user.email,
+          address: this.props.user.address,
+          editing: false
         })
       } catch (err) {
         this.setState({
