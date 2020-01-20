@@ -5,10 +5,12 @@ import Cart from './cart'
 import GuestCart from './guestCart'
 
 class MasterCart extends React.Component {
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.fetchCart()
+  }
 
   render() {
-    if (this.props.user.id) {
+    if (this.props.cart.userId) {
       return <Cart />
     } else {
       return <GuestCart />

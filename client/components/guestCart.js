@@ -66,6 +66,7 @@ class GuestCart extends React.Component {
                           item.product.id,
                           document.getElementById(item.product.id).value
                         )
+                        this.props.fetchCart()
                       }}
                       defaultValue={item.quantity}
                     >
