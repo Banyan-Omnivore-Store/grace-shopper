@@ -6,13 +6,13 @@ import {
   Login,
   Signup,
   UserHome,
-  Cart,
-  Checkout,
+  MasterCheckout,
   AllProducts,
   SingleProduct,
   AllOrders,
   SingleOrder,
-  UserProfile
+  UserProfile,
+  productSearchResults,
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
@@ -22,10 +22,10 @@ import {fetchCart} from './store/cart.js'
  * COMPONENT
  */
 class Routes extends Component {
-  componentDidMount() {
-    this.props.loadInitialData()
-    this.props.fetchProducts()
-    this.props.fetchCart()
+  async componentDidMount() {
+    await this.props.loadInitialData()
+    await this.props.fetchProducts()
+    await this.props.fetchCart()
   }
 
   render() {
@@ -41,12 +41,12 @@ class Routes extends Component {
           path="/products"
           render={() => <AllProducts products={this.props.products} />}
         />
-        <Route path="/cart" component={Cart} />
+        <Route path="/cart" component={MasterCart} />
+        <Route path="/checkout" component={MasterCheckout} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
-            <Route path="/checkout" component={Checkout} />
             <Route path="/orders/:orderId" component={SingleOrder} />
             <Route path="/orders" component={AllOrders} />
             <Route path="/profile" component={UserProfile} />

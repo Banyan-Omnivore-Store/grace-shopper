@@ -50,7 +50,7 @@ const makeOrder = () => {
   const orders = []
   for (let i = 0; i < 10; i++) {
     orders.push({
-      status: ['cartNotEmpty', 'purchased', 'shipped', 'delivered'][
+      status: ['cart', 'purchased', 'shipped', 'delivered'][
         Math.floor(Math.random() * 4)
       ],
       shippingInfo: faker.address.streetAddress(),
@@ -60,7 +60,7 @@ const makeOrder = () => {
   }
 
   orders.push({
-    status: 'cartEmpty',
+    status: 'cart',
     userId: 12
   })
 
