@@ -21,12 +21,7 @@ router.get('/', async (req, res, next) => {
       cart = await Order.findOrCreate({
         where: {
           userId: req.user.id,
-          status: {
-            [Op.or]: ['cartEmpty', 'cartNotEmpty']
-          }
-        },
-        defaults: {
-          status: 'cartEmpty'
+          status: 'cart'
         },
         include: [{model: Product}]
       })
@@ -72,7 +67,6 @@ router.put('/order/:orderId', async (req, res, next) => {
       if (!req.session.cart.products) {
         index = -1
       } else {
-
         index = req.session.cart.products.reduce(
           (finalIndex, item, currentIndex) => {
             if (item.product.id === productId) {
@@ -115,10 +109,7 @@ router.put('/order/:orderId', async (req, res, next) => {
   } else {
     try {
       const order = await Order.findOne({
-        where: {id: req.params.orderId},
-        status: {
-          [Op.or]: ['cartEmpty', 'cartNotEmpty']
-        }
+        where: {id: req.params.orderId, status: 'cart'}
       })
       const prevQty = await OrderItem.findOne({
         where: {orderId: req.params.orderId, productId: req.body.productId}
@@ -150,9 +141,6 @@ router.put('/order/:orderId', async (req, res, next) => {
             quantity: quantity
           }
         })
-        if (order.status === 'cartEmpty') {
-          await order.update({status: 'cartNotEmpty'})
-        }
       }
       res.send('item added to cart')
     } catch (err) {
@@ -198,10 +186,7 @@ router.put('/replace/:orderId', async (req, res, next) => {
   } else {
     try {
       const order = await Order.findOne({
-        where: {id: req.params.orderId},
-        status: {
-          [Op.or]: ['cartEmpty', 'cartNotEmpty']
-        }
+        where: {id: req.params.orderId, status: 'cart'}
       })
       const productId = req.body.productId
       const quantity = req.body.quantity
@@ -231,10 +216,7 @@ router.delete('/product', async (req, res, next) => {
     const orderId = req.body.orderId
 
     const order = await Order.findOne({
-      where: {id: orderId},
-      status: {
-        [Op.or]: ['cartEmpty', 'cartNotEmpty']
-      }
+      where: {id: orderId, status: 'cart'}
     })
 
     const product = await Product.findOne({
