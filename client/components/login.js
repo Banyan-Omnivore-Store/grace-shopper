@@ -27,8 +27,8 @@ class Login extends React.Component {
   render() {
     const {name, displayName, error} = this.props
     return (
-      <div>
-        <form onSubmit={this.handleSubmit} name={name}>
+      <div className="login c">
+        <form onSubmit={this.handleSubmit} name={name} className="c">
           <div>
             <label htmlFor="email">
               <small>Email</small>

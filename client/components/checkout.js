@@ -4,6 +4,7 @@ import {fetchCart} from '../store/cart'
 import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
 import {CardElement, injectStripe} from 'react-stripe-elements'
+import {Button} from 'semantic-ui-react'
 
 import './styling/checkout.css'
 
@@ -123,7 +124,7 @@ class Checkout extends React.Component {
     let tax = 0
     let subtotal = 0
     let total = 0
-    let error
+    let error = <div />
 
     if (this.props.cart.products) {
       products = this.props.cart.products
@@ -145,7 +146,7 @@ class Checkout extends React.Component {
       tax = Math.round(taxRate * subtotal * 100) / 100
       total = Math.round((tax + subtotal) * 100) / 100
       if (this.state.error) {
-        error = <div>{this.state.error}</div>
+        error = <div className="checkout-error">{this.state.error}</div>
       }
       return (
         <div className="checkout c">
@@ -153,59 +154,63 @@ class Checkout extends React.Component {
             <div className="checkout-info_title">Review Your Order</div>
           </div>
           <form
-            className="checkout-form c"
+            className="c checkout-form"
             onSubmit={event => this.handlePlaceOrder(event, this.props.cart.id)}
           >
-            <div className="checkout-details r">
-              <div className="checkout-detailst_delivery c">
-                <label htmlFor="address">Shipping Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={this.state.address}
-                  onChange={this.handleChange}
-                />
+            <div className="c checkout-details">
+              <div className="r">
+                <div className="checkout-detailst_delivery c">
+                  <label htmlFor="address">Shipping Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={this.state.address}
+                    onChange={this.handleChange}
+                  />
+                </div>
+                <div className="checkout-details_email c">
+                  <label htmlFor="email">Confirmation Email</label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                  />
+                </div>
               </div>
-              <div className="checkout-details_email c">
-                <label htmlFor="email">Confirmation Email</label>
-                <input
-                  type="text"
-                  name="email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                />
-              </div>
+              <CardElement
+                name="card"
+                onChange={this.handleCardChange}
+                {...createOptions()}
+              />
             </div>
-            <CardElement
-              name="card"
-              onChange={this.handleCardChange}
-              {...createOptions()}
-            />
-            <div className="r">
-              <div className="checkout-items c">
+            {error}
+            <div className="checkout-items-container">
+              <div className="checkout-items">
                 {this.props.cart.products.map(product => (
                   <div className="checkout-item r" key={product.id}>
-                    <div className="">
-                      <img
-                        src={product.imageUrl}
-                        width="200px"
-                        alt="product image"
-                      />
-                    </div>
-                    <div className="c">
+                    <img
+                      src={product.imageUrl}
+                      width="50%"
+                      alt="product image"
+                    />
+                    <div className="c" width="50%">
                       <div className="checkout-item_name">
                         {product.productName}
                       </div>
                       <div className="checkout-item_quantity">
-                        {product.orderItems.quantity}
+                        Quantity: {product.orderItems.quantity}
                       </div>
-                      <div className="checkout-item_price">{product.price}</div>
+                      <div className="checkout-item_price">
+                        Price: ${product.price}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="checkout-place-order c">
-                <button
+              <div className="c checkout-place-order">
+                <Button
+                  className="checkout-submit"
                   type="submit"
                   disabled={
                     this.state.isButtonDisabled ||
@@ -214,29 +219,28 @@ class Checkout extends React.Component {
                   }
                 >
                   Place your order
-                </button>
+                </Button>
                 <div className="checkout-place-order_subtotal">
                   <div className="checkout-place-order_subtotal__label">
                     Subtotal
                   </div>
                   <div className="checkout-place-order_subtotal__value">
-                    {subtotal}
+                    ${subtotal}
                   </div>
                 </div>
                 <div className="checkout-place-order_tax">
                   <div className="checkout-place-order_tax__label">Tax</div>
-                  <div className="checkout-place-order_tax__value">{tax}</div>
+                  <div className="checkout-place-order_tax__value">${tax}</div>
                 </div>
                 <div className="checkout-place-order_total">
                   <div className="checkout-place-order_total__label">Total</div>
                   <div className="checkout-place-order_total__value">
-                    {total}
+                    ${total}
                   </div>
                 </div>
               </div>
             </div>
           </form>
-          {error}
         </div>
       )
     } else {
