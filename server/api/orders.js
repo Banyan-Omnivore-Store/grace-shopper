@@ -244,7 +244,10 @@ router.put('/guestPurchase', async (req, res, next) => {
         console.log('checking product.id in inv update', product.id)
         console.log('checking quantity', product.orderItems)
         const actualProduct = await Product.findByPk(product.id)
-        total += Number(actualProduct.price)
+        console.log('actual product', actualProduct)
+        total += Number(actualProduct.price) * product.orderItems.quantity
+        //should we use parseFloat here?
+        //one time I received an error that said SequelizeDatabaseError: numeric field overflow. Idk.
         await Product.update(
           {
             inventory: actualProduct.inventory - product.orderItems.quantity
