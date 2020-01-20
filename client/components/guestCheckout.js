@@ -32,7 +32,7 @@ const createOptions = () => {
   }
 }
 
-class Checkout extends React.Component {
+class GuestCheckout extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -70,7 +70,7 @@ class Checkout extends React.Component {
     }
   }
 
-  async handlePlaceOrder(event, orderId) {
+  async handlePlaceOrder(event) {
     event.preventDefault()
     this.setState({
       isButtonDisabled: true
@@ -86,8 +86,7 @@ class Checkout extends React.Component {
       try {
         //creates token for stripe payment
         const token = await this.props.stripe.createToken()
-        const res = await axios.put('/api/orders/purchase', {
-          orderId,
+        const res = await axios.put('/api/orders/guestPurchase', {
           address: this.state.address,
           payment: this.state.email,
           token: token.token.id
@@ -101,11 +100,11 @@ class Checkout extends React.Component {
         let email = this.state.email
         let order = this.state.completedOrder
 
-        let emailObj = await axios.post('/orders/responseEmail', {
-          firstName: firstName,
-          email: email,
-          order: order
-        })
+        // let emailObj = await axios.post('/orders/responseEmail', {
+        //   firstName: firstName,
+        //   email: email,
+        //   order: order
+        // })
         //
       } catch (err) {
         if (err.response) {
@@ -160,7 +159,7 @@ class Checkout extends React.Component {
           </div>
           <form
             className="checkout-form"
-            onSubmit={event => this.handlePlaceOrder(event, this.props.cart.id)}
+            onSubmit={event => this.handlePlaceOrder(event)}
           >
             <div className="checkout-details">
               <div className="checkout-detailst_delivery">
@@ -255,5 +254,5 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  injectStripe(Checkout)
+  injectStripe(GuestCheckout)
 )
