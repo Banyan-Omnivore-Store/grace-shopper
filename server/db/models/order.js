@@ -4,14 +4,13 @@ const db = require('../db')
 module.exports = db.define('order', {
   status: {
     type: Sequelize.ENUM(
-      'cartEmpty',
-      'cartNotEmpty',
+      'cart',
       'purchased',
       'canceled',
       'shipped',
       'delivered'
     ),
-    defaultValue: 'cartEmpty',
+    defaultValue: 'cart',
     allowNull: false
   },
   shippingInfo: {

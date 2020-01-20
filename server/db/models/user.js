@@ -43,7 +43,8 @@ const User = db.define('user', {
   },
   userStatus: {
     type: Sequelize.ENUM('guest', 'member', 'admin'),
-    allowNull: false
+    allowNull: false,
+    defaultValue: 'member'
   },
   address: {
     type: Sequelize.STRING

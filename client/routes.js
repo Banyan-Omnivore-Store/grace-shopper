@@ -6,27 +6,28 @@ import {
   Login,
   Signup,
   UserHome,
-  Cart,
   Checkout,
   AllProducts,
   SingleProduct,
   AllOrders,
   SingleOrder,
   UserProfile,
-  productSearchResults
+  productSearchResults,
+  MasterCart
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
 import {fetchCart} from './store/cart.js'
+import {StripeProvider, Elements} from 'react-stripe-elements'
 
 /**
  * COMPONENT
  */
 class Routes extends Component {
-  componentDidMount() {
-    this.props.loadInitialData()
-    this.props.fetchProducts()
-    this.props.fetchCart()
+  async componentDidMount() {
+    await this.props.loadInitialData()
+    await this.props.fetchProducts()
+    await this.props.fetchCart()
   }
 
   render() {
@@ -42,12 +43,18 @@ class Routes extends Component {
           path="/products"
           render={() => <AllProducts products={this.props.products} />}
         />
-        <Route path="/cart" component={Cart} />
+        <Route path="/cart" component={MasterCart} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route path="/home" component={UserHome} />
-            <Route path="/checkout" component={Checkout} />
+            <Route path="/checkout">
+              <StripeProvider apiKey="pk_test_nXMbO0tEFvLJso12RaW4bpTD005h7qJ60z">
+                <Elements>
+                  <Checkout />
+                </Elements>
+              </StripeProvider>
+            </Route>
             <Route path="/orders/:orderId" component={SingleOrder} />
             <Route path="/orders" component={AllOrders} />
             <Route path="/profile" component={UserProfile} />
