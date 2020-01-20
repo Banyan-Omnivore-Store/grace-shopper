@@ -12,7 +12,6 @@ router.get('/', async (req, res, next) => {
     }
     res.send(req.session.cart)
   } else {
-    console.log('user req.session: ', req.session)
     try {
       const cart = await Order.findOrCreate({
         where: {

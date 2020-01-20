@@ -12,7 +12,8 @@ import {
   SingleProduct,
   AllOrders,
   SingleOrder,
-  UserProfile
+  UserProfile,
+  productSearchResults
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
@@ -36,6 +37,10 @@ class Routes extends Component {
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        <Route
+          path="/products/searchResults/:searchTerms"
+          component={productSearchResults}
+        />
         <Route path="/products/:productId" component={SingleProduct} />
         <Route
           path="/products"

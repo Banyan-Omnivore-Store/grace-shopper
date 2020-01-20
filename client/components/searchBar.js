@@ -4,7 +4,7 @@ import {fetchProducts} from '../store/products'
 import {
   withRouter,
   Route,
-  /*BrowserRouter as Router, */ Link
+  /*BrowserRouter as Router, */ NavLink
 } from 'react-router-dom'
 // import {productSearchResults} from './productSearchResults'
 
@@ -26,14 +26,14 @@ class UnconnectedSearchBar extends React.Component {
     this.setState({searchText: event.target.value})
   }
 
-  searchAllProducts(event) {
+  async searchAllProducts(event) {
     try {
       event.preventDefault()
       let searchVal = this.state.searchText
       let filteredProdArr = this.props.products.filter(product => {
-        return product.productName.includes(searchVal)
+        return product.productName.toLowerCase().includes(searchVal)
       })
-      this.setState({filteredProducts: filteredProdArr})
+      await this.setState({filteredProducts: filteredProdArr})
     } catch (err) {
       console.log(err)
     }
@@ -55,14 +55,14 @@ class UnconnectedSearchBar extends React.Component {
             type="text"
             onChange={event => this.searchChangeHandler(event)}
           />
-          <Link to={`/searchResults/${this.state.searchText}`}>
+          <NavLink to={`/products/searchResults/${this.state.searchText}`}>
             <button
               type="submit"
               onClick={event => this.searchAllProducts(event)}
             >
               Submit
             </button>
-          </Link>
+          </NavLink>
         </div>
       </div>
       // </Router>
