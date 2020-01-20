@@ -54,7 +54,7 @@ router.put('/purchase', async (req, res, next) => {
       include: [{model: Product}]
     })
     //if an order is already past cartNotEmpty or if it is empty, respond with an error
-    if (order.status !== 'cartNotEmpty') {
+    if (order.status !== 'cart') {
       const error = new Error('Error: Cart status error')
       error.status = 500
       return next(error)
