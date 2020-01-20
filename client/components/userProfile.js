@@ -49,7 +49,7 @@ class UserProfile extends React.Component {
       firstName: this.props.user.firstName,
       lastName: this.props.user.lastName,
       email: this.props.user.email,
-      address: this.props.user.address,
+      address: this.props.user.address || '',
       editing: false,
       error: ''
     })
