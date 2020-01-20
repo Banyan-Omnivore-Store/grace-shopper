@@ -10,6 +10,7 @@ const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
+const auth = require('../secrets')
 
 const nodemailer = require('nodemailer')
 // import mailer from './mailer'
@@ -94,19 +95,17 @@ const createApp = () => {
 
     let transporter = nodemailer.createTransport({
       service: 'Gmail',
-      auth: {
-        user: 'omnivoreStoreGraceShopper@gmail.com',
-        pass: 'omnivoreStore123'
-      }
+      auth: auth
     })
     // let prductArr =
     // eslint-disable-next-line react/react-in-jsx-scope
     let mailContent = `<h1>Hi ${firstName}!</h1><p>Thank you for your order! </p><p>Please access your full receipt at http://localhost:8080/orders at any time. Come back soon! </p><p>The Omnivore Store Team</p>`
+    let mailText = `Hi ${firstName}!Thank you for your order! Please access your full receipt at http://localhost:8080/orders at any time. Come back soon! The Omnivore Store Team`
     let mailOptions = {
       from: 'omnivoreStoreGraceShopper@gmail.com',
-      to: 'e.k.tilden@gmail.com',
+      to: email,
       subject: 'Thank You For Your Order!',
-      // text: `I wonder.`,
+      text: mailText,
       html: mailContent
     }
     try {

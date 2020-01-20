@@ -104,7 +104,6 @@ class Checkout extends React.Component {
           email: email,
           order: order
         })
-        //
       } catch (err) {
         if (err.response) {
           this.setState({

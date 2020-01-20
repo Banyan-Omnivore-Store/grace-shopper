@@ -12,6 +12,7 @@ import {
   AllOrders,
   SingleOrder,
   UserProfile,
+  productSearchResults,
   MasterCart
 } from './components'
 import {me} from './store'
