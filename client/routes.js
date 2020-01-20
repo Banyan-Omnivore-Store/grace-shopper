@@ -12,8 +12,7 @@ import {
   SingleProduct,
   AllOrders,
   SingleOrder,
-  UserProfile,
-  productSearchResults
+  UserProfile
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
