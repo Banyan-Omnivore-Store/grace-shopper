@@ -29,8 +29,12 @@ router.get('/', async (req, res, next) => {
       next(err)
     }
     cart = cart[0]
+    //if the user had a cart as a guest
     if (req.session.cart) {
-      if (req.session.cart.products.length > 0) {
+      console.log('im a user w/ guest cart:', req.session.cart)
+      //if the guest cart had any products in it
+      if (req.session.cart.products) {
+        //add each item to their new cart (updated line below as it was crashing w/ .length > 0)
         for (let elem of req.session.cart.products) {
           try {
             const product = await Product.findByPk(elem.product.id)
@@ -46,6 +50,7 @@ router.get('/', async (req, res, next) => {
         delete req.session.cart
         res.json(cart)
       } else {
+        //otherwise delete their session cart
         delete req.session.cart
         res.json(cart)
       }
