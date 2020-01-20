@@ -1,0 +1,7 @@
+.checkout {
+  width: 100%;
+}
+
+.checkout-form .StripeElement {
+  width: 80%;
+}

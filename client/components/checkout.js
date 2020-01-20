@@ -5,11 +5,7 @@ import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
 import {CardElement, injectStripe} from 'react-stripe-elements'
 
-const styles = {
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column'
-}
+import './styling/checkout.css'
 
 const createOptions = () => {
   return {
@@ -152,16 +148,16 @@ class Checkout extends React.Component {
         error = <div>{this.state.error}</div>
       }
       return (
-        <div className="checkout">
+        <div className="checkout c">
           <div className="checkout-info">
             <div className="checkout-info_title">Review Your Order</div>
           </div>
           <form
-            className="checkout-form"
+            className="checkout-form c"
             onSubmit={event => this.handlePlaceOrder(event, this.props.cart.id)}
           >
-            <div className="checkout-details">
-              <div className="checkout-detailst_delivery">
+            <div className="checkout-details r">
+              <div className="checkout-detailst_delivery c">
                 <label htmlFor="address">Shipping Address</label>
                 <input
                   type="text"
@@ -170,7 +166,7 @@ class Checkout extends React.Component {
                   onChange={this.handleChange}
                 />
               </div>
-              <div className="checkout-details_email">
+              <div className="checkout-details_email c">
                 <label htmlFor="email">Confirmation Email</label>
                 <input
                   type="text"
@@ -180,52 +176,64 @@ class Checkout extends React.Component {
                 />
               </div>
             </div>
-            <div className="checkout-items">
-              {this.props.cart.products.map(product => (
-                <div className="checkout-item" key={product.id}>
-                  <div className="checkout-item_name">
-                    {product.productName}
+            <CardElement
+              name="card"
+              onChange={this.handleCardChange}
+              {...createOptions()}
+            />
+            <div className="r">
+              <div className="checkout-items c">
+                {this.props.cart.products.map(product => (
+                  <div className="checkout-item r" key={product.id}>
+                    <div className="">
+                      <img
+                        src={product.imageUrl}
+                        width="200px"
+                        alt="product image"
+                      />
+                    </div>
+                    <div className="c">
+                      <div className="checkout-item_name">
+                        {product.productName}
+                      </div>
+                      <div className="checkout-item_quantity">
+                        {product.orderItems.quantity}
+                      </div>
+                      <div className="checkout-item_price">{product.price}</div>
+                    </div>
                   </div>
-                  <div className="checkout-item_quantity">
-                    {product.orderItems.quantity}
+                ))}
+              </div>
+              <div className="checkout-place-order c">
+                <button
+                  type="submit"
+                  disabled={
+                    this.state.isButtonDisabled ||
+                    !this.state.email ||
+                    !this.state.address
+                  }
+                >
+                  Place your order
+                </button>
+                <div className="checkout-place-order_subtotal">
+                  <div className="checkout-place-order_subtotal__label">
+                    Subtotal
                   </div>
-                  <div className="checkout-item_price">{product.price}</div>
-                  <img src={product.imageUrl} alt="product image" />
+                  <div className="checkout-place-order_subtotal__value">
+                    {subtotal}
+                  </div>
                 </div>
-              ))}
-            </div>
-            <div className="checkout-place-order" style={styles}>
-              <button
-                type="submit"
-                disabled={
-                  this.state.isButtonDisabled ||
-                  !this.state.email ||
-                  !this.state.address
-                }
-              >
-                Place your order
-              </button>
-              <div className="checkout-place-order_subtotal">
-                <div className="checkout-place-order_subtotal__label">
-                  Subtotal
+                <div className="checkout-place-order_tax">
+                  <div className="checkout-place-order_tax__label">Tax</div>
+                  <div className="checkout-place-order_tax__value">{tax}</div>
                 </div>
-                <div className="checkout-place-order_subtotal__value">
-                  {subtotal}
+                <div className="checkout-place-order_total">
+                  <div className="checkout-place-order_total__label">Total</div>
+                  <div className="checkout-place-order_total__value">
+                    {total}
+                  </div>
                 </div>
               </div>
-              <div className="checkout-place-order_tax">
-                <div className="checkout-place-order_tax__label">Tax</div>
-                <div className="checkout-place-order_tax__value">{tax}</div>
-              </div>
-              <div className="checkout-place-order_total">
-                <div className="checkout-place-order_total__label">Total</div>
-                <div className="checkout-place-order_total__value">{total}</div>
-              </div>
-              <CardElement
-                name="card"
-                onChange={this.handleCardChange}
-                {...createOptions()}
-              />
             </div>
           </form>
           {error}
