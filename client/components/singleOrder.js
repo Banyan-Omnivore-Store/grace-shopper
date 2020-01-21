@@ -2,6 +2,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {setOrder, fetchOrder} from '../store/order'
+import {Container, Grid, Image, GridColumn} from 'semantic-ui-react'
 
 //export functional component which maps through props.products
 class SingleOrder extends React.Component {
@@ -15,30 +16,75 @@ class SingleOrder extends React.Component {
 
   render() {
     if (!this.props.order.id) {
-      return <div>No Order Yet!</div>
+      return (
+        <Container>
+          <br />
+          <br />
+          <div>No Order Yet!</div>
+        </Container>
+      )
     } else {
       return (
         <div className="order">
-          <div className="order-info">
-            <div className="order-info-text">
-              Details for Order Number: {this.props.order.id}
-            </div>
-          </div>
-          <div className="order-details">
-            <div className="order-details_items">
-              <p>Status: {this.props.order.status}</p>
-              <p>Total: {this.props.order.cartTotal}</p>
-              <p>Items: </p>
-              {this.props.order.products.map(product => (
-                <div className="order-product" key={product.id}>
-                  <div>{product.productName}</div>
-                  <div>Quantity: {product.orderItems.quantity}</div>
-                  <div>Price: {product.orderItems.purchasePrice}</div>
-                  <img src={product.imageUrl} />
+          <Container>
+            <br />
+            <br />
+            <Grid columns={2} divided>
+              <GridColumn width={5}>
+                <div className="order-info">
+                  <h3 className="order-info-text">
+                    Details for Order Number: {this.props.order.id}
+                  </h3>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="order-details">
+                  <div className="order-details_items">
+                    <h4>Status: {this.props.order.status}</h4>
+                    <h4>Total: {this.props.order.cartTotal}</h4>
+                  </div>
+                </div>
+              </GridColumn>
+              <GridColumn width={6}>
+                <h4>Items: </h4>
+                <Container>
+                  <Grid columns={2}>
+                    <GridColumn width={10}>
+                      {this.props.order.products.map(product => (
+                        <div className="order-product" key={product.id}>
+                          <Grid.Row>
+                            <br />
+                            <span>
+                              <h4>{product.productName}</h4>
+                              <div>Quantity: {product.orderItems.quantity}</div>
+                              <div>
+                                Price: {product.orderItems.purchasePrice}
+                              </div>
+                            </span>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                          </Grid.Row>
+                        </div>
+                      ))}
+                    </GridColumn>
+                    <GridColumn width={6}>
+                      {this.props.order.products.map(product => (
+                        <div className="order-product" key={product.id}>
+                          <Grid.Row>
+                            <Image src={product.imageUrl} size="small" />
+                            <br />
+                            <br />
+                            <br />
+                          </Grid.Row>
+                        </div>
+                      ))}
+                    </GridColumn>
+                  </Grid>
+                </Container>
+              </GridColumn>
+            </Grid>
+          </Container>
         </div>
       )
     }

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {fetchCart} from '../store/cart'
+import AllProducts from './allProducts'
 
 /**
  * COMPONENT
@@ -21,6 +22,7 @@ export class UserHome extends React.Component {
     return (
       <div>
         <h3>Welcome, {email}</h3>
+        <AllProducts />
       </div>
     )
   }

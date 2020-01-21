@@ -31,7 +31,6 @@ router.get('/', async (req, res, next) => {
     cart = cart[0]
     //if the user had a cart as a guest
     if (req.session.cart) {
-      console.log('im a user w/ guest cart:', req.session.cart)
       //if the guest cart had any products in it
       if (req.session.cart.products) {
         //add each item to their new cart (updated line below as it was crashing w/ .length > 0)
@@ -219,10 +218,8 @@ router.put('/replace/:orderId', async (req, res, next) => {
 router.delete('/product', async (req, res, next) => {
   if (!req.user) {
     try {
-      console.log('req.body:', req.body)
       const productId = req.body.productId
       const orderId = req.body.orderId
-      console.log('productId:', productId, 'orderId:', orderId)
       console.log('current cart', req.session.cart)
       //remove the object within the products array that matches the given productId
       let index = req.session.cart.products.reduce(
@@ -234,7 +231,6 @@ router.delete('/product', async (req, res, next) => {
         },
         -1
       )
-      console.log('index:', index)
       req.session.cart.products.splice(index, 1)
       console.log('updated cart', req.session.cart)
       res.send('item deleted from guest cart')

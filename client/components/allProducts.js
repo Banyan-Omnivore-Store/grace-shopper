@@ -74,7 +74,6 @@ class AllProducts extends React.Component {
           </div>
           <div className="productList">
             {this.state.displayProducts.map(product => {
-              console.log(this.state.selectedCategoryName)
               if (
                 product.productName
                   .toLowerCase()

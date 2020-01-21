@@ -148,7 +148,6 @@ router.put('/purchase', async (req, res, next) => {
 })
 
 router.put('/guestPurchase', async (req, res, next) => {
-  console.log('!!!!guest purchase clicked')
   //req.body includes shipping, email and token
   function getRandomInt(min, max) {
     min = Math.ceil(min)
@@ -241,10 +240,7 @@ router.put('/guestPurchase', async (req, res, next) => {
 
       //change inventory to reflect purchase and start adding price to get total
       for (let product of order.products) {
-        console.log('checking product.id in inv update', product.id)
-        console.log('checking quantity', product.orderItems)
         const actualProduct = await Product.findByPk(product.id)
-        console.log('actual product', actualProduct)
         total += Number(actualProduct.price) * product.orderItems.quantity
         //should we use parseFloat here?
         //one time I received an error that said SequelizeDatabaseError: numeric field overflow. Idk.
