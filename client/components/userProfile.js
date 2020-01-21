@@ -3,6 +3,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {me} from '../store/user'
 import axios from 'axios'
+import {Button, Grid, Form, Segment, Header, Message} from 'semantic-ui-react'
 
 //export functional component which maps through props.products
 class UserProfile extends React.Component {
@@ -168,102 +169,101 @@ class UserProfile extends React.Component {
       }
       return (
         <div className="user-profile">
-          <div className="user-profile-header">Your Profile</div>
-          <div className="user-profile-main">
-            <form onSubmit={this.handleEdit}>
-              <div className="user-profile-field">
-                <label htmlFor="firstName">First Name: </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={this.state.firstName}
-                  onChange={this.handleChange}
-                  disabled={!this.state.editingInfo}
-                />
-              </div>
-              <div className="user-profile-field">
-                <label htmlFor="lastName">Last Name: </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={this.state.lastName}
-                  onChange={this.handleChange}
-                  disabled={!this.state.editingInfo}
-                />
-              </div>
-              <div className="user-profile-field">
-                <label htmlFor="email">Email: </label>
-                <input
-                  type="text"
-                  name="email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                  disabled={!this.state.editingInfo}
-                />
-              </div>
-              <div className="user-profile-field">
-                <label htmlFor="address">Default Address: </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={this.state.address}
-                  onChange={this.handleChange}
-                  disabled={!this.state.editingInfo}
-                />
-              </div>
-              {this.state.editingInfo ? (
-                <div>
-                  <button type="submit" disabled={this.state.isSubmitDisabled}>
-                    Submit Changes
-                  </button>
-                  <button onClick={this.cancelEdit}>Cancel</button>
-                </div>
-              ) : (
-                <button onClick={this.startEdit}>Edit</button>
-              )}
-            </form>
-            <form
-              className="user-password-field"
-              onSubmit={this.handlePasswordEdit}
-            >
-              <div className="user-password-field">
-                <label htmlFor="newPassword">New Password: </label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={this.state.newPassword}
-                  onChange={this.handleChange}
-                  disabled={!this.state.editingPassword}
-                />
-              </div>
-              <div className="user-password-field">
-                <label htmlFor="confirmNewPassword">
-                  Confirm New Password:{' '}
-                </label>
-                <input
-                  type="password"
-                  name="confirmNewPassword"
-                  value={this.state.confirmNewPassword}
-                  onChange={this.handleChange}
-                  disabled={!this.state.editingPassword}
-                />
-              </div>
-              {this.state.editingPassword ? (
-                <div>
-                  <button
-                    type="submit"
-                    disabled={this.state.isPasswordSubmitDisabled}
-                  >
-                    Submit Changes
-                  </button>
-                  <button onClick={this.cancelPasswordEdit}>Cancel</button>
-                </div>
-              ) : (
-                <button onClick={this.startPasswordEdit}>Edit</button>
-              )}
-            </form>
-            {error}
-          </div>
+          <Grid style={{margin: '20px'}}>
+            <Grid.Column>
+              <Header as="h2" textAlign="center">
+                Your Profile
+              </Header>
+              <Header as="h3">Edit Your Information</Header>
+              <Form onSubmit={this.handleEdit}>
+                <Form.Group widths="equal">
+                  <Form.Input
+                    type="text"
+                    label="First Name"
+                    name="firstName"
+                    value={this.state.firstName}
+                    onChange={this.handleChange}
+                    disabled={!this.state.editingInfo}
+                  />
+                  <Form.Input
+                    type="text"
+                    label="Last Name"
+                    name="lastName"
+                    value={this.state.lastName}
+                    onChange={this.handleChange}
+                    disabled={!this.state.editingInfo}
+                  />
+                  <Form.Input
+                    type="text"
+                    label="Email"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                    disabled={!this.state.editingInfo}
+                  />
+                  <Form.Input
+                    type="text"
+                    label="Default Address"
+                    name="address"
+                    value={this.state.address}
+                    onChange={this.handleChange}
+                    disabled={!this.state.editingInfo}
+                  />
+                </Form.Group>
+                {this.state.editingInfo ? (
+                  <Form.Group>
+                    <Button
+                      type="submit"
+                      disabled={this.state.isSubmitDisabled}
+                    >
+                      Submit Changes
+                    </Button>
+                    <Button onClick={this.cancelEdit}>Cancel</Button>
+                  </Form.Group>
+                ) : (
+                  <Button onClick={this.startEdit}>Edit</Button>
+                )}
+              </Form>
+              <Header as="h3">Change Your Password</Header>
+              <Form
+                className="user-password-field"
+                onSubmit={this.handlePasswordEdit}
+              >
+                <Form.Group textAlign="center">
+                  <Form.Input
+                    type="password"
+                    label="New Password"
+                    name="newPassword"
+                    value={this.state.newPassword}
+                    onChange={this.handleChange}
+                    disabled={!this.state.editingPassword}
+                  />
+                  <Form.Input
+                    type="password"
+                    label="Confirm New Password"
+                    name="confirmNewPassword"
+                    value={this.state.confirmNewPassword}
+                    onChange={this.handleChange}
+                    disabled={!this.state.editingPassword}
+                  />
+                </Form.Group>
+                {this.state.editingPassword ? (
+                  <Form.Group>
+                    <Button
+                      type="submit"
+                      disabled={this.state.isPasswordSubmitDisabled}
+                    >
+                      Submit Changes
+                    </Button>
+                    <Button onClick={this.cancelPasswordEdit}>Cancel</Button>
+                  </Form.Group>
+                ) : (
+                  <Button onClick={this.startPasswordEdit}>Edit</Button>
+                )}
+              </Form>
+              {error}
+            </Grid.Column>
+          </Grid>
         </div>
       )
     }
