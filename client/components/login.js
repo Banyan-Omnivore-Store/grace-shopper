@@ -36,21 +36,17 @@ class Login extends React.Component {
           <Form size="massive" onSubmit={this.handleSubmit} name={name}>
             <Segment stacked textAlign="center">
               <Form.Input
-                fluid
-                style={{width: '300px'}}
                 name="email"
                 icon="user"
                 iconPosition="left"
                 placeholder="E-mail address"
               />
               <Form.Input
-                fluid
                 icon="lock"
                 iconPosition="left"
                 placeholder="Password"
                 name="password"
                 type="password"
-                style={{width: '300px'}}
               />
               <Button fluid size="large" type="submit">
                 {displayName}
