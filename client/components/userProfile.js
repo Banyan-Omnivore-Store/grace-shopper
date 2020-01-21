@@ -169,14 +169,14 @@ class UserProfile extends React.Component {
       }
       return (
         <div className="user-profile">
-          <Grid style={{marginLeft: '20px'}}>
+          <Grid style={{margin: '20px'}}>
             <Grid.Column>
               <Header as="h2" textAlign="center">
                 Your Profile
               </Header>
               <Header as="h3">Edit Your Information</Header>
               <Form onSubmit={this.handleEdit}>
-                <Form.Group>
+                <Form.Group widths="equal">
                   <Form.Input
                     type="text"
                     label="First Name"
