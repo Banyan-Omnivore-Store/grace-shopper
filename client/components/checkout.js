@@ -221,11 +221,6 @@ class Checkout extends React.Component {
                 <div className="checkout-place-order_total__label">Total</div>
                 <div className="checkout-place-order_total__value">{total}</div>
               </div>
-              <CardElement
-                name="card"
-                onChange={this.handleCardChange}
-                {...createOptions()}
-              />
             </div>
           </form>
           {error}

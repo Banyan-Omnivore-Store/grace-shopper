@@ -2,9 +2,23 @@
 import React from 'react'
 import {NavLink, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {setProducts, fetchProducts} from '../store/products'
+import {
+  setProducts,
+  fetchProducts,
+  fetchDesiredProducts
+} from '../store/products'
 import {fetchCategories} from '../store/categories'
 import {addToCart, fetchCart} from '../store/cart'
+import {
+  Grid,
+  Image,
+  Card,
+  Icon,
+  Container,
+  Input,
+  Button,
+  Dropdown
+} from 'semantic-ui-react'
 
 //export functional component which maps through props.products
 class AllProducts extends React.Component {
@@ -14,7 +28,7 @@ class AllProducts extends React.Component {
     this.state = {
       searchText: '',
       displayProducts: [],
-      selectedCategoryName: null
+      selectedCategoryName: ''
     }
     this.selectCategory = this.selectCategory.bind(this)
   }
@@ -27,7 +41,6 @@ class AllProducts extends React.Component {
       selectedCategoryName: this.props.products
     })
   }
-
   searchChangeHandler(event) {
     this.setState({searchText: event.target.value})
   }
@@ -45,71 +58,115 @@ class AllProducts extends React.Component {
       return <div>No Products</div>
     } else if (this.props.products) {
       return (
-        <div className="wrapper">
-          <div className="search_capabilities">
-            <h4> Search by product name: </h4>
-            <input
-              type="text"
-              onChange={event => this.searchChangeHandler(event)}
-              value={this.state.searchText}
-            />
-            <br />
-            <button type="submit" onClick={() => this.renderAllProducts()}>
-              Return to All Products
-            </button>
-            <h4>Search by category: </h4>
-            <select onChange={this.selectCategory}>
-              <option value={JSON.stringify(this.props.products)}>
-                See all products
-              </option>
-              {this.props.categories.map(category => (
-                <option
-                  key={category.id}
-                  value={JSON.stringify(category.products)}
-                >
-                  {category.name}
+        <Container>
+          <div className="wrapper">
+            <div className="search_capabilities">
+              <h4> Search by product name: </h4>
+              <Input
+                type="text"
+                onChange={event => this.searchChangeHandler(event)}
+                value={this.state.searchText}
+                focus
+                placeholder="Search..."
+              />
+              <br />
+              <Button type="submit" onClick={() => this.renderAllProducts()}>
+                Return to All Products
+              </Button>
+              <h4>Search by category: </h4>
+              {/* couldn't get semantic drop down to work, wasn't sending the category/product object you have set up */}
+              {/* <Dropdown
+                placeholder="Select Category"
+                fluid
+                value={this.state.selectedCategoryName}
+                selection
+                onChange={this.selectCategory}
+                options={this.props.categories.map(category => {
+                  return {
+                    key: category.name,
+                    text: category.name,
+                    value: category.id
+                  }
+                })} */}
+              {/* /> */}
+              <select onChange={this.selectCategory}>
+                <option value={JSON.stringify(this.props.products)}>
+                  See all products
                 </option>
-              ))}
-            </select>
+                {this.props.categories.map(category => (
+                  <option
+                    key={category.id}
+                    value={JSON.stringify(category.products)}
+                  >
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+
+              <Grid columns={4} divided>
+                {this.state.displayProducts.map((product, index) => {
+                  if (
+                    product.productName
+                      .toLowerCase()
+                      .includes(this.state.searchText.toLowerCase()) &&
+                    this.state.selectedCategoryName.filter(
+                      categoryProd => categoryProd.id === product.id
+                    ).length
+                  )
+                    return (
+                      <Grid.Column key={index}>
+                        <Card>
+                          <Image
+                            src={product.imageUrl}
+                            height="50px"
+                            wrapped
+                            ui={false}
+                          />
+                          <Card.Content
+                            as={NavLink}
+                            to={`/products/${product.id}`}
+                          >
+                            <Card.Header>{product.productName}</Card.Header>
+                            <Card.Meta>
+                              <span className="category">
+                                Tags:
+                                {product.categories
+                                  .map(catObj => catObj.name)
+                                  .join(', ')}
+                              </span>
+                            </Card.Meta>
+                            <Card.Description>
+                              {product.description}
+                            </Card.Description>
+                          </Card.Content>
+                          <Card.Content extra>
+                            Price: {product.price}
+                          </Card.Content>
+                          <Card.Content extra>
+                            <div>
+                              <a
+                                onClick={async () => {
+                                  await addToCart(
+                                    this.props.cart.id,
+                                    product.id,
+                                    1
+                                  )
+                                  await this.props.fetchCart()
+                                }}
+                              >
+                                <Icon name="add to cart" />
+                                Add to Cart
+                              </a>
+                            </div>
+                          </Card.Content>
+                        </Card>
+                      </Grid.Column>
+                    )
+                })}
+              </Grid>
+            </div>
           </div>
-          <div className="productList">
-            {this.state.displayProducts.map(product => {
-              console.log(this.state.selectedCategoryName)
-              if (
-                product.productName
-                  .toLowerCase()
-                  .includes(this.state.searchText.toLowerCase()) &&
-                this.state.selectedCategoryName.filter(
-                  categoryProd => categoryProd.id === product.id
-                ).length
-              )
-                return (
-                  <div key={product.id} className="product">
-                    <NavLink
-                      to={`/products/${product.id}`}
-                      activeClassName="active"
-                    >
-                      <div>
-                        <h2>{product.productName}</h2>
-                      </div>
-                    </NavLink>
-                    <p>Description: {product.description}</p>
-                    <p>Price: {product.price}</p>
-                    <img src={product.imageUrl} height="200px" width="250px" />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        await addToCart(this.props.cart.id, product.id, 1)
-                        await this.props.fetchCart()
-                      }}
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
-                )
-            })}
-          </div>
-        </div>
+        </Container>
       )
     } else {
       //in the event this is rendered before the props have been fetched and passed down
@@ -130,7 +187,8 @@ const mapDispatchToProps = dispatch => {
     setProducts: products => dispatch(setProducts(products)),
     fetchProducts: () => dispatch(fetchProducts()),
     fetchCart: () => dispatch(fetchCart()),
-    fetchCategories: () => dispatch(fetchCategories())
+    fetchCategories: () => dispatch(fetchCategories()),
+    fetchDesiredProducts: () => dispatch(fetchDesiredProducts())
   }
 }
 

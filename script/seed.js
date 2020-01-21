@@ -40,7 +40,7 @@ const makeProduct = () => {
       price: faker.commerce.price(),
       inventory: faker.random.number(),
       imageUrl: faker.image.imageUrl(),
-      description: faker.company.catchPhraseDescriptor()
+      description: faker.lorem.sentence()
     })
   }
   return products
