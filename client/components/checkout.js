@@ -4,12 +4,7 @@ import {fetchCart} from '../store/cart'
 import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
 import {CardElement, injectStripe} from 'react-stripe-elements'
-
-const styles = {
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column'
-}
+import './styling/checkout.css'
 
 const createOptions = () => {
   return {
@@ -179,6 +174,11 @@ class Checkout extends React.Component {
                   onChange={this.handleChange}
                 />
               </div>
+              <CardElement
+                name="card"
+                onChange={this.handleCardChange}
+                {...createOptions()}
+              />
             </div>
             <div className="checkout-items">
               {this.props.cart.products.map(product => (
@@ -194,7 +194,7 @@ class Checkout extends React.Component {
                 </div>
               ))}
             </div>
-            <div className="checkout-place-order" style={styles}>
+            <div className="checkout-place-order">
               <button
                 type="submit"
                 disabled={
@@ -221,11 +221,6 @@ class Checkout extends React.Component {
                 <div className="checkout-place-order_total__label">Total</div>
                 <div className="checkout-place-order_total__value">{total}</div>
               </div>
-              <CardElement
-                name="card"
-                onChange={this.handleCardChange}
-                {...createOptions()}
-              />
             </div>
           </form>
           {error}
