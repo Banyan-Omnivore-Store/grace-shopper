@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
-import {Container, Select} from 'semantic-ui-react'
+import {Container, Button} from 'semantic-ui-react'
 
 let simpleArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -41,6 +41,11 @@ class GuestCart extends React.Component {
             <div className="cart-info">
               <h2 className="cart-info_title">Your Cart</h2>
             </div>
+            <h3 className="cart-total">Subtotal: ${cartTotal}</h3>
+            <Link to="/checkout">
+              <Button>Proceed to checkout</Button>
+            </Link>
+            <br />
             <div className="cart-items">
               {this.props.cart.products.map(item => (
                 <div className="cart-item" key={item.product.id}>
@@ -114,7 +119,7 @@ class GuestCart extends React.Component {
                           }}
                         />
                       )}
-                      <button
+                      <Button
                         type="button"
                         onClick={async () => {
                           await deleteFromCart(
@@ -125,15 +130,14 @@ class GuestCart extends React.Component {
                         }}
                       >
                         Delete
-                      </button>
+                      </Button>
                     </div>
-                    <div className="cart-item_price">{item.product.price}</div>
+                    <div className="cart-item_price">${item.product.price}</div>
+                    <br />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="cart-total">Subtotal: ${cartTotal}</div>
-            <Link to="/checkout">Proceed to checkout</Link>
           </Container>
         </div>
       )

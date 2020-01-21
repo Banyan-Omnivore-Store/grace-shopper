@@ -26,7 +26,7 @@ class CheckoutComplete extends React.Component {
             <br />
           </div>
           <Grid columns={3} divided>
-            <GridColumn width={5}>
+            <GridColumn /*width={4}*/>
               <h3 className="checkout-complete-item_field">
                 {`Total: $${order.cartTotal}`}
               </h3>
@@ -34,7 +34,7 @@ class CheckoutComplete extends React.Component {
                 order.products.length
               } item(s) total`}</h3>
             </GridColumn>
-            <GridColumn width={6}>
+            <GridColumn /*width={4}*/>
               <div className="checkout-complete-items">
                 {order.products.map(product => (
                   <div key={product.id} className="checkout-complete-item">
@@ -56,7 +56,7 @@ class CheckoutComplete extends React.Component {
                 ))}
               </div>
             </GridColumn>
-            <GridColumn width={6}>
+            <GridColumn /*width={4}*/>
               {order.products.map(product => (
                 <div className="checkout-complete-item" key={product.id}>
                   <Grid.Row>

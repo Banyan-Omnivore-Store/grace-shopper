@@ -50,12 +50,6 @@ const Navbar = ({handleClick, isLoggedIn}) => (
                 <Link to="/signup" id="menuItem">
                   Sign Up
                 </Link>
-                <Link to="/cart" id="menuItem">
-                  Cart
-                </Link>
-                <Link to="/products" id="menuItem">
-                  Products
-                </Link>
               </div>
             )}
           </GridRow>
@@ -64,7 +58,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <GridRow>
             <Container textAlign="right">
               <h1>
-                 />Omnivore Store
+                <GiCornucopia />Omnivore Store
               </h1>
             </Container>
           </GridRow>
