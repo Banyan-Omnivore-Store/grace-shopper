@@ -151,8 +151,12 @@ class UnconnectedSingleProduct extends React.Component {
             <input
               type="text"
               onChange={event => this.reviewTextChangeHandler(event)}
+              value={this.state.reviewText}
             />
-            <select onChange={event => this.reviewRatingChangeHandler(event)}>
+            <select
+              onChange={event => this.reviewRatingChangeHandler(event)}
+              value={this.state.reviewRating}
+            >
               <option value="1">*</option>
               <option value="2">**</option>
               <option value="3">***</option>
