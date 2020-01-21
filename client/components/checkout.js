@@ -190,20 +190,22 @@ class Checkout extends React.Component {
               {error}
             </div>
             <div className="checkout-container">
-              <Item.Group className="checkout-items">
-                {this.props.cart.products.map(product => (
-                  <Item className="checkout-item" key={product.id}>
-                    <Item.Image src={product.imageUrl} alt="product image" />
-                    <Item.Content>
-                      <Item.Header>{product.productName}</Item.Header>
-                      <Item.Extra>
-                        Quantity: {product.orderItems.quantity}
-                      </Item.Extra>
-                      <Item.Extra>Price: ${product.price}</Item.Extra>
-                    </Item.Content>
-                  </Item>
-                ))}
-              </Item.Group>
+              <div className="checkout-items">
+                <Item.Group>
+                  {this.props.cart.products.map(product => (
+                    <Item className="checkout-item" key={product.id}>
+                      <Item.Image src={product.imageUrl} alt="product image" />
+                      <Item.Content>
+                        <Item.Header>{product.productName}</Item.Header>
+                        <Item.Extra>
+                          Quantity: {product.orderItems.quantity}
+                        </Item.Extra>
+                        <Item.Extra>Price: ${product.price}</Item.Extra>
+                      </Item.Content>
+                    </Item>
+                  ))}
+                </Item.Group>
+              </div>
               <div className="checkout-place-order">
                 <Button
                   type="submit"
