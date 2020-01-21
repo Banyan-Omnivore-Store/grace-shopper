@@ -4,7 +4,6 @@ import {fetchCart} from '../store/cart'
 import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
 import {CardElement, injectStripe} from 'react-stripe-elements'
-
 import './styling/checkout.css'
 
 console.log('you are in guest checkout')

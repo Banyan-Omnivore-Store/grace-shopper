@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
 import './styling/cart.css'
 
+
 let simpleArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 class GuestCart extends React.Component {
