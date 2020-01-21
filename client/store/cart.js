@@ -4,6 +4,8 @@ import axios from 'axios'
  * ACTION TYPES
  */
 const GET_CART = 'GET_CART'
+//Need to set cart as a guest user when user logs out. This is to prevent the site from rendering a guest cart while still having a user cart in its state
+const REMOVE_USER = 'REMOVE_USER'
 /**
  * INITIAL STATE
  */
@@ -65,6 +67,8 @@ export default function(state = defaultCart, action) {
   switch (action.type) {
     case GET_CART:
       return action.cart
+    case REMOVE_USER:
+      return {products: []}
     default:
       return state
   }

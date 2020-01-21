@@ -5,6 +5,8 @@ import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
 import {CardElement, injectStripe} from 'react-stripe-elements'
 
+console.log('you are in guest checkout')
+
 const styles = {
   width: '100%',
   display: 'flex',
@@ -30,7 +32,7 @@ const createOptions = () => {
   }
 }
 
-class Checkout extends React.Component {
+class GuestCheckout extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -49,8 +51,8 @@ class Checkout extends React.Component {
   async componentDidMount() {
     await this.props.fetchCart()
     this.setState({
-      address: this.props.user.address || '',
-      email: this.props.user.email
+      address: '',
+      email: ''
     })
   }
 
@@ -68,14 +70,13 @@ class Checkout extends React.Component {
     }
   }
 
-  async handlePlaceOrder(event, orderId) {
+  async handlePlaceOrder(event) {
     event.preventDefault()
     this.setState({
       isButtonDisabled: true
     })
 
     let emailValidate = /^\w+@\w+\.\w+$/
-    //i think email validation may be failing on emails with periods in them.. e.g. nick.spiva@gmail.com
     if (!this.state.email.match(emailValidate)) {
       this.setState({
         error: 'Please enter a valid email',
@@ -85,8 +86,7 @@ class Checkout extends React.Component {
       try {
         //creates token for stripe payment
         const token = await this.props.stripe.createToken()
-        const res = await axios.put('/api/orders/purchase', {
-          orderId,
+        const res = await axios.put('/api/orders/guestPurchase', {
           address: this.state.address,
           payment: this.state.email,
           token: token.token.id
@@ -100,11 +100,12 @@ class Checkout extends React.Component {
         let email = this.state.email
         let order = this.state.completedOrder
 
-        let emailObj = await axios.post('/orders/responseEmail', {
-          firstName: firstName,
-          email: email,
-          order: order
-        })
+        // let emailObj = await axios.post('/orders/responseEmail', {
+        //   firstName: firstName,
+        //   email: email,
+        //   order: order
+        // })
+        //
       } catch (err) {
         if (err.response) {
           this.setState({
@@ -142,7 +143,7 @@ class Checkout extends React.Component {
       )
     } else if (products.length > 0) {
       subtotal = products.reduce(
-        (acc, curr) => acc + curr.price * curr.orderItems.quantity,
+        (acc, curr) => acc + curr.product.price * curr.quantity,
         0
       )
 
@@ -158,7 +159,7 @@ class Checkout extends React.Component {
           </div>
           <form
             className="checkout-form"
-            onSubmit={event => this.handlePlaceOrder(event, this.props.cart.id)}
+            onSubmit={event => this.handlePlaceOrder(event)}
           >
             <div className="checkout-details">
               <div className="checkout-detailst_delivery">
@@ -181,16 +182,20 @@ class Checkout extends React.Component {
               </div>
             </div>
             <div className="checkout-items">
-              {this.props.cart.products.map(product => (
-                <div className="checkout-item" key={product.id}>
+              {this.props.cart.products.map(item => (
+                <div className="checkout-item" key={item.product.id}>
                   <div className="checkout-item_name">
-                    {product.productName}
+                    {item.product.productName}
                   </div>
-                  <div className="checkout-item_quantity">
-                    {product.orderItems.quantity}
+                  <div className="checkout-item_quantity">{item.quantity}</div>
+                  <div className="checkout-item_price">
+                    {item.product.price}
                   </div>
-                  <div className="checkout-item_price">{product.price}</div>
-                  <img src={product.imageUrl} alt="product image" />
+                  <img
+                    src={item.product.imageUrl}
+                    alt="product image"
+                    height="200px"
+                  />
                 </div>
               ))}
             </div>
@@ -249,5 +254,5 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  injectStripe(Checkout)
+  injectStripe(GuestCheckout)
 )
