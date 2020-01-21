@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
 import history from '../history'
+import {Button, Grid, Form, Segment, Header, Message} from 'semantic-ui-react'
 
 /**
  * COMPONENT
@@ -11,27 +12,37 @@ const Signup = props => {
   const {name, displayName, handleSubmit, error} = props
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} name={name}>
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
-        </div>
-        <div>
-          <button type="submit">{displayName}</button>
-        </div>
+    <Grid textAlign="center" style={{height: '70vh'}} verticalAlign="middle">
+      <Grid.Column style={{maxWidth: 450}} textAlign="center">
+        <Header as="h2" textAlign="center">
+          Sign Up
+        </Header>
+        <Form size="massive" onSubmit={handleSubmit} name={name}>
+          <Segment stacked textAlign="center">
+            <Form.Input
+              name="email"
+              icon="user"
+              iconPosition="left"
+              placeholder="E-mail address"
+            />
+            <Form.Input
+              icon="lock"
+              iconPosition="left"
+              placeholder="Password"
+              name="password"
+              type="password"
+            />
+            <Button fluid size="large" type="submit">
+              {displayName}
+            </Button>
+          </Segment>
+        </Form>
         {error && error.response && <div> {error.response.data} </div>}
-      </form>
-      <a href="/auth/google">{displayName} with Google</a>
-    </div>
+        <Message>
+          <a href="/auth/google">{displayName} with Google</a>
+        </Message>
+      </Grid.Column>
+    </Grid>
   )
 }
 
@@ -75,3 +86,25 @@ export default connect(mapState, mapDispatch)(Signup)
 //   handleSubmit: PropTypes.func.isRequired,
 //   error: PropTypes.object
 // }
+
+// <div>
+// <form onSubmit={handleSubmit} name={name}>
+//   <div>
+//     <label htmlFor="email">
+//       <small>Email</small>
+//     </label>
+//     <input name="email" type="text" />
+//   </div>
+//   <div>
+//     <label htmlFor="password">
+//       <small>Password</small>
+//     </label>
+//     <input name="password" type="password" />
+//   </div>
+//   <div>
+//     <button type="submit">{displayName}</button>
+//   </div>
+//   {error && error.response && <div> {error.response.data} </div>}
+// </form>
+// <a href="/auth/google">{displayName} with Google</a>
+// </div>

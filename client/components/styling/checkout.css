@@ -8,16 +8,31 @@
 
 .checkout-form {
   width: 100%;
-}
-
-.checkout-form .StripeElement {
-  width: 80%;
-}
-
-.checkout-details {
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 10px;
+  width: 100%;
+  padding-left: 10px;
+}
+
+.StripeElement {
+  width: 400px;
+}
+
+.checkout-place-order {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  /* width: 100%; */
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
 }

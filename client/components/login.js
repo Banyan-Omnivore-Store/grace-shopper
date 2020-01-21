@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {auth} from '../store'
 import history from '../history'
 import {fetchCart} from '../store/cart'
-import {Button} from 'semantic-ui-react'
+import {Button, Grid, Form, Segment, Header, Message} from 'semantic-ui-react'
 
 class Login extends React.Component {
   constructor(props) {
@@ -28,26 +28,34 @@ class Login extends React.Component {
   render() {
     const {name, displayName, error} = this.props
     return (
-      <div>
-        <form onSubmit={this.handleSubmit} name={name}>
-          <div>
-            <label htmlFor="email">
-              <small>Email</small>
-            </label>
-            <input name="email" type="text" />
-          </div>
-          <div>
-            <label htmlFor="password">
-              <small>Password</small>
-            </label>
-            <input name="password" type="password" />
-          </div>
-          <div>
-            <Button type="submit">{displayName}</Button>
-          </div>
+      <Grid textAlign="center" style={{height: '70vh'}} verticalAlign="middle">
+        <Grid.Column style={{maxWidth: 450}} textAlign="center">
+          <Header as="h2" textAlign="center">
+            Log-in to your account
+          </Header>
+          <Form size="massive" onSubmit={this.handleSubmit} name={name}>
+            <Segment stacked textAlign="center">
+              <Form.Input
+                name="email"
+                icon="user"
+                iconPosition="left"
+                placeholder="E-mail address"
+              />
+              <Form.Input
+                icon="lock"
+                iconPosition="left"
+                placeholder="Password"
+                name="password"
+                type="password"
+              />
+              <Button fluid size="large" type="submit">
+                {displayName}
+              </Button>
+            </Segment>
+          </Form>
           {error && error.response && <div> {error.response.data} </div>}
-        </form>
-      </div>
+        </Grid.Column>
+      </Grid>
     )
   }
 }
@@ -86,3 +94,25 @@ export default connect(mapState, mapDispatch)(Login)
 //   handleSubmit: PropTypes.func.isRequired,
 //   error: PropTypes.object
 // }
+
+{
+  /* <form onSubmit={this.handleSubmit} name={name}>
+          <div>
+            <label htmlFor="email">
+              <small>Email</small>
+            </label>
+            <input name="email" type="text" />
+          </div>
+          <div>
+            <label htmlFor="password">
+              <small>Password</small>
+            </label>
+            <input name="password" type="password" />
+          </div>
+          <div>
+            <Button type="submit">{displayName}</Button>
+          </div>
+          {error && error.response && <div> {error.response.data} </div>}
+        </form>
+        <a href="/auth/google">{displayName} with Google</a> */
+}

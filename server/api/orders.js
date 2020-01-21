@@ -287,6 +287,8 @@ router.put('/guestPurchase', async (req, res, next) => {
         }
       )
 
+      req.session.cart = {products: []}
+
       const completedOrder = await Order.findByPk(guestOrder.id, {
         include: [{model: Product}]
       })

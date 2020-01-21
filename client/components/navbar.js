@@ -64,7 +64,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <GridRow>
             <Container textAlign="right">
               <h1>
-                <GiCornucopia />Omnivore Store
+                 />Omnivore Store
               </h1>
             </Container>
           </GridRow>
