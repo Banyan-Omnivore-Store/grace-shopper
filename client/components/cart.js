@@ -13,7 +13,6 @@ class Cart extends React.Component {
   }
 
   render() {
-    console.log('in user cart area')
     let products = []
     let cartTotal = ''
     if (this.props.cart.products) {
@@ -67,7 +66,8 @@ class Cart extends React.Component {
                           await changeQuantityInCart(
                             this.props.cart.id,
                             product.id,
-                            document.getElementById(product.id).value
+                            document.getElementById(product.id).value,
+                            this.props.fetchCart()
                           )
                         }}
                         defaultValue={product.orderItems.quantity}
@@ -99,6 +99,7 @@ class Cart extends React.Component {
                             product.id,
                             document.getElementById(product.id).value
                           )
+                          await this.props.fetchCart()
                         }}
                       />
                     )}

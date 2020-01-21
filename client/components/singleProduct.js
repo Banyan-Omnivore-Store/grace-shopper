@@ -3,6 +3,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {fetchSingleProduct, createNewReviewThunk} from '../store/product'
 import {addToCart, fetchCart} from '../store/cart'
+import {Container, Grid, Image, GridColumn} from 'semantic-ui-react'
 
 class UnconnectedSingleProduct extends React.Component {
   constructor() {
@@ -94,99 +95,130 @@ class UnconnectedSingleProduct extends React.Component {
     let avgRating = this.avgRating(this.props.singleProduct.reviews)
     return this.props.singleProduct ? (
       <div id="product">
-        <img src={this.props.singleProduct.imageUrl} />
-        <h3>{this.props.singleProduct.productName}</h3>
-        <h4>Average Rating: {this.numStarConverter(avgRating)} </h4>
-        <h4>${this.props.singleProduct.price}</h4>
-        <p>Description: {this.props.singleProduct.description}</p>
-        <div>{this.props.singleProduct.inventory} in stock</div>
-
-        <div>
-          <select onChange={event => this.quantityChangeHandler(event)}>
-            {inventoryArr.map(item => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            onClick={() =>
-              this.addToCartButtonClickHandler(
-                this.props.cart.id,
-                this.props.singleProduct.id,
-                this.state.value
-              )
-            }
-          >
-            Add to Cart
-          </button>
-        </div>
-        <div id="reviews">
-          {this.props.singleProduct.reviews ? (
-            <div>
-              <div id="pre-existing_reviews">
-                {this.props.singleProduct.reviews.map(review => (
-                  <div key={review.id}>
-                    <div>Rated: {this.numStarConverter(review.rating)}</div>
-                    <div>Comment: {review.comment}</div>
-                    <div>Comment by: {review.user.firstName}</div>
-                    <p>
-                      On: {review.createdAt.slice(5, 7)}/{review.createdAt.slice(
-                        8,
-                        10
-                      )}/{review.createdAt.slice(0, 4)}
-                    </p>
+        <br />
+        <br />
+        <br />
+        <Container>
+          <Grid columns={2} divided>
+            <Grid.Row>
+              <GridColumn>
+                <Image src={this.props.singleProduct.imageUrl} />
+              </GridColumn>
+              <GridColumn>
+                <Container textAlign="right">
+                  <h2>{this.props.singleProduct.productName}</h2>
+                  <h4>Average Rating: {this.numStarConverter(avgRating)} </h4>
+                  <h4>${this.props.singleProduct.price}</h4>
+                  <p>Description: {this.props.singleProduct.description}</p>
+                  <div>{this.props.singleProduct.inventory} in stock</div>
+                  <br />
+                  <div>
+                    <select
+                      onChange={event => this.quantityChangeHandler(event)}
+                    >
+                      {inventoryArr.map(item => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        this.addToCartButtonClickHandler(
+                          this.props.cart.id,
+                          this.props.singleProduct.id,
+                          this.state.value
+                        )
+                      }
+                    >
+                      Add to Cart
+                    </button>
                   </div>
-                ))}
-              </div>
-              <h4>Add a review...</h4>
-            </div>
-          ) : (
-            <div>
-              <h4>This product has no reviews yet! Be the first to review!</h4>
-            </div>
-          )}
-          <div id="add_review">
-            <input
-              type="text"
-              onChange={event => this.reviewTextChangeHandler(event)}
-              value={this.state.reviewText}
-            />
-            <select
-              onChange={event => this.reviewRatingChangeHandler(event)}
-              value={this.state.reviewRating}
-            >
-              <option value="1">*</option>
-              <option value="2">**</option>
-              <option value="3">***</option>
-              <option value="4">****</option>
-              <option value="5">*****</option>
-            </select>
-            <button
-              type="submit"
-              onClick={async () => {
-                if (this.props.user.firstName) {
-                  this.addReviewButtonClickHandler(
-                    this.props.user,
-                    this.props.singleProduct.id,
-                    this.state.reviewRating,
-                    this.state.reviewText
-                  )
-                  await this.props.fetchSingleProduct(
-                    this.props.match.params.productId
-                  )
-                  this.setState({reviewRating: 1})
-                  this.setState({reviewText: ''})
-                } else {
-                  alert('Please log in to post a review!')
-                }
-              }}
-            >
-              Add Your Review
-            </button>
-          </div>
-        </div>
+                </Container>
+                <Container textAlign="right">
+                  <div id="reviews">
+                    <br />
+                    <h3>Reviews...</h3>
+                    {this.props.singleProduct.reviews ? (
+                      <div>
+                        <div id="pre-existing_reviews">
+                          {this.props.singleProduct.reviews.map(review => (
+                            <div key={review.id}>
+                              <div>
+                                Rated: {this.numStarConverter(review.rating)}
+                              </div>
+                              <div>Comment: {review.comment}</div>
+                              <div>Comment by: {review.user.firstName}</div>
+                              <p>
+                                On: {review.createdAt.slice(5, 7)}/{review.createdAt.slice(
+                                  8,
+                                  10
+                                )}/{review.createdAt.slice(0, 4)}
+                              </p>
+                              <br />
+                            </div>
+                          ))}
+                        </div>
+                        <h4>Add a review...</h4>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4>
+                          This product has no reviews yet! Be the first to
+                          review!
+                        </h4>
+                      </div>
+                    )}
+                    <div id="add_review">
+                      <input
+                        type="text"
+                        onChange={event => this.reviewTextChangeHandler(event)}
+                        value={this.state.reviewText}
+                      />
+                      <br />
+                      <select
+                        onChange={event =>
+                          this.reviewRatingChangeHandler(event)
+                        }
+                        value={this.state.reviewRating}
+                      >
+                        <option value="1">*</option>
+                        <option value="2">**</option>
+                        <option value="3">***</option>
+                        <option value="4">****</option>
+                        <option value="5">*****</option>
+                      </select>
+                      <br />
+                      <button
+                        type="submit"
+                        onClick={async () => {
+                          if (this.props.user.firstName) {
+                            this.addReviewButtonClickHandler(
+                              this.props.user,
+                              this.props.singleProduct.id,
+                              this.state.reviewRating,
+                              this.state.reviewText
+                            )
+                            await this.props.fetchSingleProduct(
+                              this.props.match.params.productId
+                            )
+                            this.setState({reviewRating: 1})
+                            this.setState({reviewText: ''})
+                          } else {
+                            alert('Please log in to post a review!')
+                          }
+                        }}
+                      >
+                        Add Your Review
+                      </button>
+                    </div>
+                  </div>
+                </Container>
+              </GridColumn>
+            </Grid.Row>
+          </Grid>
+        </Container>
       </div>
     ) : (
       <div>Loading...</div>

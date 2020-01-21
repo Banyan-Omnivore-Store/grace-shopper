@@ -12,7 +12,6 @@ import {
   AllOrders,
   SingleOrder,
   UserProfile,
-  productSearchResults,
   MasterCart,
   EditOrder,
   EditProduct,
@@ -36,8 +35,6 @@ class Routes extends Component {
 
   render() {
     const {isLoggedIn, isAdmin} = this.props
-    console.log('user: ', this.props.user)
-    console.log('isAdmin: ', isAdmin)
 
     return (
       <Switch>

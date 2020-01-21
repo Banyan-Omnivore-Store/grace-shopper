@@ -54,9 +54,6 @@ class Login extends React.Component {
             </Segment>
           </Form>
           {error && error.response && <div> {error.response.data} </div>}
-          <Message>
-            <a href="/auth/google">{displayName} with Google</a>
-          </Message>
         </Grid.Column>
       </Grid>
     )
