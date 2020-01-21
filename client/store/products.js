@@ -14,6 +14,12 @@ export const fetchProducts = () => async dispatch => {
   dispatch(setProducts(products))
 }
 
+export const fetchDesiredProducts = category => async dispatch => {
+  const response = await axios.get(`/api/products/category/${category}`)
+  const products = response.data
+  dispatch(setProducts(products))
+}
+
 //sub-reducer
 function productsReducer(products = [], action) {
   switch (action.type) {
