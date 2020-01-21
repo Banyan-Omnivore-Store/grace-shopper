@@ -14,14 +14,18 @@ class AllProducts extends React.Component {
     this.state = {
       searchText: '',
       displayProducts: [],
-      selectedCategoryName: ''
+      selectedCategoryName: null
     }
+    this.selectCategory = this.selectCategory.bind(this)
   }
 
   async componentDidMount() {
     await this.props.fetchProducts()
     await this.props.fetchCategories()
-    this.setState({displayProducts: this.props.products})
+    this.setState({
+      displayProducts: this.props.products,
+      selectedCategoryName: this.props.products
+    })
   }
 
   searchChangeHandler(event) {
@@ -29,7 +33,11 @@ class AllProducts extends React.Component {
   }
 
   renderAllProducts() {
-    this.setState({searchText: ''})
+    this.setState({searchText: '', selectedCategoryName: ''})
+  }
+
+  selectCategory(event) {
+    this.setState({selectedCategoryName: JSON.parse(event.target.value)})
   }
 
   render() {
@@ -45,18 +53,35 @@ class AllProducts extends React.Component {
               onChange={event => this.searchChangeHandler(event)}
               value={this.state.searchText}
             />
-            <h4>Search by category: </h4>
-            <input type="checkbox" />
+            <br />
             <button type="submit" onClick={() => this.renderAllProducts()}>
-              View All Products
+              Return to All Products
             </button>
+            <h4>Search by category: </h4>
+            <select onChange={this.selectCategory}>
+              <option value={JSON.stringify(this.props.products)}>
+                See all products
+              </option>
+              {this.props.categories.map(category => (
+                <option
+                  key={category.id}
+                  value={JSON.stringify(category.products)}
+                >
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="productList">
             {this.state.displayProducts.map(product => {
+              console.log(this.state.selectedCategoryName)
               if (
                 product.productName
                   .toLowerCase()
-                  .includes(this.state.searchText.toLowerCase())
+                  .includes(this.state.searchText.toLowerCase()) &&
+                this.state.selectedCategoryName.filter(
+                  categoryProd => categoryProd.id === product.id
+                ).length
               )
                 return (
                   <div key={product.id} className="product">
