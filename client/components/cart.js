@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
+import {Header, Item} from 'semantic-ui-react'
 import './styling/cart.css'
 
 let simpleArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -31,7 +32,7 @@ class Cart extends React.Component {
       return (
         <div className="cart">
           <div className="cart-info">
-            <div className="cart-info_title">Your Cart</div>
+            <Header size="large">Your Cart</Header>
           </div>
           <div className="cart-items">
             {this.props.cart.products.map(product => (

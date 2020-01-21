@@ -4,6 +4,7 @@ import {fetchCart} from '../store/cart'
 import axios from 'axios'
 import CheckoutComplete from './checkoutComplete'
 import {CardElement, injectStripe} from 'react-stripe-elements'
+import {Header, Button, Item, Form} from 'semantic-ui-react'
 import './styling/checkout.css'
 
 console.log('you are in guest checkout')
@@ -150,85 +151,93 @@ class GuestCheckout extends React.Component {
       return (
         <div className="checkout">
           <div className="checkout-info">
-            <div className="checkout-info_title">Review Your Order</div>
+            <Header size="large">Review Your Order</Header>
           </div>
-          <form
+          <Form
             className="checkout-form"
             onSubmit={event => this.handlePlaceOrder(event)}
           >
             <div className="checkout-details">
-              <div className="checkout-detailst_delivery">
-                <label htmlFor="address">Shipping Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={this.state.address}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div className="checkout-details_email">
-                <label htmlFor="email">Confirmation Email</label>
-                <input
-                  type="text"
-                  name="email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <CardElement
-                name="card"
-                onChange={this.handleCardChange}
-                {...createOptions()}
-              />
-            </div>
-            <div className="checkout-items">
-              {this.props.cart.products.map(item => (
-                <div className="checkout-item" key={item.product.id}>
-                  <div className="checkout-item_name">
-                    {item.product.productName}
-                  </div>
-                  <div className="checkout-item_quantity">{item.quantity}</div>
-                  <div className="checkout-item_price">
-                    {item.product.price}
-                  </div>
-                  <img
-                    src={item.product.imageUrl}
-                    alt="product image"
-                    height="200px"
+              <Form.Group>
+                <Form.Field widths="equal">
+                  <label htmlFor="address">Shipping Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={this.state.address}
+                    onChange={this.handleChange}
                   />
-                </div>
-              ))}
+                </Form.Field>
+                <Form.Field>
+                  <label htmlFor="email">Confirmation Email</label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                  />
+                </Form.Field>
+              </Form.Group>
+              <Form.Group>
+                <Form.Field>
+                  <label>Payment Information</label>
+                  <CardElement
+                    name="card"
+                    onChange={this.handleCardChange}
+                    {...createOptions()}
+                  />
+                </Form.Field>
+              </Form.Group>
+              {error}
             </div>
-            <div className="checkout-place-order">
-              <button
-                type="submit"
-                disabled={
-                  this.state.isButtonDisabled ||
-                  !this.state.email ||
-                  !this.state.address
-                }
-              >
-                Place your order
-              </button>
-              <div className="checkout-place-order_subtotal">
-                <div className="checkout-place-order_subtotal__label">
-                  Subtotal
+            <div className="checkout-container">
+              <Item.Group className="checkout-items">
+                {this.props.cart.products.map(item => (
+                  <Item className="checkout-item" key={item.product.id}>
+                    <Item.Image
+                      src={item.product.imageUrl}
+                      alt="product image"
+                    />
+                    <Item.Content>
+                      <Item.Header>{item.product.productName}</Item.Header>
+                      <Item.Extra>Quantity: {item.quantity}</Item.Extra>
+                      <Item.Extra>Price: ${item.product.price}</Item.Extra>
+                    </Item.Content>
+                  </Item>
+                ))}
+              </Item.Group>
+              <div className="checkout-place-order">
+                <Button
+                  type="submit"
+                  disabled={
+                    this.state.isButtonDisabled ||
+                    !this.state.email ||
+                    !this.state.address
+                  }
+                >
+                  Place your order
+                </Button>
+                <div className="checkout-place-order_subtotal">
+                  <div className="checkout-place-order_subtotal__label">
+                    Subtotal
+                  </div>
+                  <div className="checkout-place-order_subtotal__value">
+                    ${subtotal}
+                  </div>
                 </div>
-                <div className="checkout-place-order_subtotal__value">
-                  {subtotal}
+                <div className="checkout-place-order_tax">
+                  <div className="checkout-place-order_tax__label">Tax</div>
+                  <div className="checkout-place-order_tax__value">${tax}</div>
                 </div>
-              </div>
-              <div className="checkout-place-order_tax">
-                <div className="checkout-place-order_tax__label">Tax</div>
-                <div className="checkout-place-order_tax__value">{tax}</div>
-              </div>
-              <div className="checkout-place-order_total">
-                <div className="checkout-place-order_total__label">Total</div>
-                <div className="checkout-place-order_total__value">{total}</div>
+                <div className="checkout-place-order_total">
+                  <div className="checkout-place-order_total__label">Total</div>
+                  <div className="checkout-place-order_total__value">
+                    ${total}
+                  </div>
+                </div>
               </div>
             </div>
-          </form>
-          {error}
+          </Form>
         </div>
       )
     } else {
