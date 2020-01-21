@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchCart, deleteFromCart, changeQuantityInCart} from '../store/cart'
+import './styling/cart.css'
 
 let simpleArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -25,7 +26,7 @@ class Cart extends React.Component {
             0
           ) * 100
         ) / 100
-      cartTotal = `Subtotal: ${totalPrice}`
+      cartTotal = `Subtotal: $${totalPrice}`
 
       return (
         <div className="cart">
@@ -35,81 +36,83 @@ class Cart extends React.Component {
           <div className="cart-items">
             {this.props.cart.products.map(product => (
               <div className="cart-item" key={product.id}>
-                <div className="cart-item_name">{product.productName}</div>
-                <div className="cart-item_inventory">
-                  Inventory:{product.inventory}
-                </div>
-                <div className="cart-item_quantity">
-                  Quantity:
-                  {product.orderItems.quantity <= 10 ? (
-                    <select
-                      id={product.id}
-                      onChange={async () => {
-                        //wanted to pull this into a class method, but... it needs some things
-                        if (
-                          document.getElementById(product.id).value >
-                          product.inventory
-                        ) {
-                          alert(
-                            'not enough inventory, your cart has been updated to the max avail.'
-                          )
-                          document.getElementById(product.id).value =
-                            product.inventory
-                        }
-                        await changeQuantityInCart(
-                          this.props.cart.id,
-                          product.id,
-                          document.getElementById(product.id).value
-                        )
-                      }}
-                      defaultValue={product.orderItems.quantity}
-                    >
-                      {simpleArray.map(item => (
-                        <option key={item} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      defaultValue={product.orderItems.quantity}
-                      id={product.id}
-                      onChange={async () => {
-                        //wanted to pull this into a class method, but... it needs some things
-                        if (
-                          document.getElementById(product.id).value >
-                          product.inventory
-                        ) {
-                          alert(
-                            'not enough inventory, your cart has been updated to the max avail.'
-                          )
-                          document.getElementById(product.id).value =
-                            product.inventory
-                        }
-                        await changeQuantityInCart(
-                          this.props.cart.id,
-                          product.id,
-                          document.getElementById(product.id).value
-                        )
-                      }}
-                    />
-                  )}
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await deleteFromCart(this.props.cart.id, product.id)
-                      await this.props.fetchCart()
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-                <div className="cart-item_price">{product.price}</div>
                 <img
                   src={product.imageUrl}
                   alt="product image"
                   height="200px"
                 />
+                <div className="cart-item-info">
+                  <div className="cart-item_name">{product.productName}</div>
+                  <div className="cart-item_inventory">
+                    Inventory:{product.inventory}
+                  </div>
+                  <div className="cart-item_quantity">
+                    Quantity:
+                    {product.orderItems.quantity <= 10 ? (
+                      <select
+                        id={product.id}
+                        onChange={async () => {
+                          //wanted to pull this into a class method, but... it needs some things
+                          if (
+                            document.getElementById(product.id).value >
+                            product.inventory
+                          ) {
+                            alert(
+                              'not enough inventory, your cart has been updated to the max avail.'
+                            )
+                            document.getElementById(product.id).value =
+                              product.inventory
+                          }
+                          await changeQuantityInCart(
+                            this.props.cart.id,
+                            product.id,
+                            document.getElementById(product.id).value
+                          )
+                        }}
+                        defaultValue={product.orderItems.quantity}
+                      >
+                        {simpleArray.map(item => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        defaultValue={product.orderItems.quantity}
+                        id={product.id}
+                        onChange={async () => {
+                          //wanted to pull this into a class method, but... it needs some things
+                          if (
+                            document.getElementById(product.id).value >
+                            product.inventory
+                          ) {
+                            alert(
+                              'not enough inventory, your cart has been updated to the max avail.'
+                            )
+                            document.getElementById(product.id).value =
+                              product.inventory
+                          }
+                          await changeQuantityInCart(
+                            this.props.cart.id,
+                            product.id,
+                            document.getElementById(product.id).value
+                          )
+                        }}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await deleteFromCart(this.props.cart.id, product.id)
+                        await this.props.fetchCart()
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <div className="cart-item_price">${product.price}</div>
+                </div>
               </div>
             ))}
           </div>

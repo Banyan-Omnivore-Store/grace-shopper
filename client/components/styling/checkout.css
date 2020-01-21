@@ -1,0 +1,23 @@
+.checkout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.checkout-form {
+  width: 100%;
+}
+
+.checkout-form .StripeElement {
+  width: 80%;
+}
+
+.checkout-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

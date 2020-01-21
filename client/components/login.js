@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {auth} from '../store'
 import history from '../history'
 import {fetchCart} from '../store/cart'
+import {Button} from 'semantic-ui-react'
 
 class Login extends React.Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class Login extends React.Component {
             <input name="password" type="password" />
           </div>
           <div>
-            <button type="submit">{displayName}</button>
+            <Button type="submit">{displayName}</Button>
           </div>
           {error && error.response && <div> {error.response.data} </div>}
         </form>

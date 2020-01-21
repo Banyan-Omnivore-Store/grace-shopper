@@ -20,19 +20,11 @@ router.put('/:userId', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.userId)
     if (req.user.id === user.id) {
-      await User.update(
-        {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          email: req.body.email,
-          address: req.body.address || ''
-        },
-        {
-          where: {
-            id: user.id
-          }
+      await user.update(req.body, {
+        where: {
+          id: user.id
         }
-      )
+      })
       res.sendStatus(200)
     } else {
       res.status(401).send('Forbidden')
