@@ -39,7 +39,7 @@ const makeProduct = () => {
       productName: faker.commerce.productName(),
       price: faker.commerce.price(),
       inventory: faker.random.number(),
-      imageUrl: faker.image.imageUrl(),
+      imageUrl: 'https://robohash.org/' + faker.name.firstName(),
       description: faker.lorem.sentence()
     })
   }
