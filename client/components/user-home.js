@@ -21,7 +21,9 @@ export class UserHome extends React.Component {
 
     return (
       <div>
-        <h3>Welcome, {email}</h3>
+        <div>
+          <h3>Welcome, {email}</h3>
+        </div>
         <AllProducts />
       </div>
     )

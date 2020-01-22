@@ -2,3 +2,18 @@ nav {
   background-color: lightgray;
   color: black;
 }
+
+.numberCircle {
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  padding: 4px, 2px, 2px, 2px;
+
+  background: lightgray;
+  border: 1px solid #666;
+  color: #666;
+  text-align: center;
+  display: inline-block;
+
+  font: 16px Arial, sans-serif;
+}

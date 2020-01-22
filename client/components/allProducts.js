@@ -59,6 +59,8 @@ class AllProducts extends React.Component {
     } else if (this.props.products) {
       return (
         <Container>
+          <br />
+          <br />
           <div className="wrapper">
             <div className="search_capabilities">
               <h4> Search by product name: </h4>
@@ -140,7 +142,7 @@ class AllProducts extends React.Component {
                             </Card.Description>
                           </Card.Content>
                           <Card.Content extra>
-                            Price: {product.price}
+                            Price: ${product.price}
                           </Card.Content>
                           <Card.Content extra>
                             <div>
