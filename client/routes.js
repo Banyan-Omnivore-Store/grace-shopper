@@ -17,7 +17,8 @@ import {
   EditProduct,
   EditUser,
   AdminHome,
-  AllUsers
+  AllUsers,
+  AdminOrders
 } from './components'
 import {me} from './store'
 import {fetchProducts} from './store/products.js'
@@ -65,7 +66,7 @@ class Routes extends Component {
             <Route path="/orders" component={AllOrders} />
             <Route path="/profile" component={UserProfile} />
             <Route path="/adminHome" component={AdminHome} />
-            <Route path="/allOrders" component={AllOrders} />
+            <Route path="/allOrders" component={AdminOrders} />
             <Route path="/allUsers" component={AllUsers} />
             <Route path="/editProduct/:productId" component={EditProduct} />
             <Route path="/editOrder/:orderId" component={EditOrder} />
