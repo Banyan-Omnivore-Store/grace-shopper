@@ -10,7 +10,11 @@ import {fetchCart} from '../store/cart'
 
 const cartHasItems = cart => {
   if (cart.products) {
-    return <div>({cart.products.length})Cart</div>
+    return (
+      <div>
+        <div className="numberCircle">{cart.products.length}</div>Cart
+      </div>
+    )
   } else {
     return <div>(0)Cart</div>
   }
@@ -67,7 +71,7 @@ const Navbar = ({handleClick, isLoggedIn, cart}) => (
           <GridRow>
             <Container textAlign="right">
               <h1>
-                <GiCornucopia />
+                {/* <GiCornucopia /> */}
                 <GiOat />mnivore Store
               </h1>
             </Container>
