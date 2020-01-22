@@ -72,7 +72,7 @@ class UserProfile extends React.Component {
     this.setState({
       isSubmitDisabled: true
     })
-    let emailValidate = /^\w+@\w+\.\w+$/
+    let emailValidate = /^[\w/.-]+@[\w/.-]+$/
     if (!this.state.email.match(emailValidate)) {
       this.setState({
         error: 'Please enter a valid email',
@@ -134,6 +134,11 @@ class UserProfile extends React.Component {
     if (this.state.newPassword !== this.state.confirmNewPassword) {
       this.setState({
         error: 'Passwords do not match',
+        isPasswordSubmitDisabled: false
+      })
+    } else if (this.state.newPassword.length < 2) {
+      this.setState({
+        error: 'Passwords is too short',
         isPasswordSubmitDisabled: false
       })
     } else {
@@ -229,7 +234,7 @@ class UserProfile extends React.Component {
                 className="user-password-field"
                 onSubmit={this.handlePasswordEdit}
               >
-                <Form.Group textAlign="center">
+                <Form.Group>
                   <Form.Input
                     type="password"
                     label="New Password"

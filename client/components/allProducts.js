@@ -140,7 +140,7 @@ class AllProducts extends React.Component {
                             </Card.Description>
                           </Card.Content>
                           <Card.Content extra>
-                            Price: {product.price}
+                            Price: ${product.price}
                           </Card.Content>
                           <Card.Content extra>
                             <div>

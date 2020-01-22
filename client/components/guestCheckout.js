@@ -72,7 +72,7 @@ class GuestCheckout extends React.Component {
       isButtonDisabled: true
     })
 
-    let emailValidate = /^\w+@\w+\.\w+$/
+    let emailValidate = /^[\w/.-]+@[\w/.-]+$/
     if (!this.state.email.match(emailValidate)) {
       this.setState({
         error: 'Please enter a valid email',

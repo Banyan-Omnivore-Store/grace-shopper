@@ -70,7 +70,7 @@ class Checkout extends React.Component {
       isButtonDisabled: true
     })
 
-    let emailValidate = /^\w+@\w+\.\w+$/
+    let emailValidate = /^[\w/.-]+@[\w/.-]+$/
     //i think email validation may be failing on emails with periods in them.. e.g. nick.spiva@gmail.com
     if (!this.state.email.match(emailValidate)) {
       this.setState({
