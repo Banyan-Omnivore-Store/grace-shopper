@@ -25,10 +25,7 @@ class AdminOrders extends React.Component {
   }
 
   render() {
-    // if (this.state.user.userStatus !== 'admin') {
-    //   return <div>No Orders Yet!</div>
-    // } else {
-    //   console.log('you at admin all orders')
+    //probably good to institute a check on user for admin here
     return (
       <Container>
         <Grid columns={4}>

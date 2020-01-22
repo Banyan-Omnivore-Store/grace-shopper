@@ -1,13 +1,16 @@
 //import react to access JSX, be able to create react functional component
 import React from 'react'
 import {connect} from 'react-redux'
+import {NavLink, withRouter} from 'react-router-dom'
 import {setOrder, fetchOrder} from '../store/order'
-import {Container, Grid, Image, GridColumn} from 'semantic-ui-react'
+import {Container, Grid, Image, GridColumn, Button} from 'semantic-ui-react'
+import {me} from '../store'
 
 //export functional component which maps through props.products
 class SingleOrder extends React.Component {
-  componentDidMount() {
-    this.props.fetchOrder(this.props.match.params.orderId)
+  async componentDidMount() {
+    await this.props.fetchOrder(this.props.match.params.orderId)
+    await this.props.loadInitialData()
   }
 
   componentWillUnmount() {
@@ -24,6 +27,16 @@ class SingleOrder extends React.Component {
         </Container>
       )
     } else {
+      let button
+      if (this.props.user.userStatus === 'admin') {
+        button = (
+          <Button as={NavLink} to={`/editOrder/${this.props.order.id}`}>
+            Admin Change Order Status
+          </Button>
+        )
+      } else {
+        button = <div />
+      }
       return (
         <div className="order">
           <Container>
@@ -84,6 +97,7 @@ class SingleOrder extends React.Component {
                 </Container>
               </GridColumn>
             </Grid>
+            {button}
           </Container>
         </div>
       )
@@ -98,6 +112,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
+    loadInitialData() {
+      dispatch(me())
+    },
     setOrder: orderObj => dispatch(setOrder(orderObj)),
     fetchOrder: orderId => dispatch(fetchOrder(orderId))
   }
