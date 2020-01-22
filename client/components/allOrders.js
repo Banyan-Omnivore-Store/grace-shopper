@@ -3,6 +3,16 @@ import React from 'react'
 import {NavLink, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {setOrders, fetchOrders} from '../store/orders'
+import {
+  Grid,
+  Image,
+  Card,
+  Icon,
+  Container,
+  Input,
+  Button,
+  Dropdown
+} from 'semantic-ui-react'
 
 //export functional component which maps through props.products
 class AllOrders extends React.Component {
@@ -19,28 +29,33 @@ class AllOrders extends React.Component {
       return <div>No Orders Yet!</div>
     } else {
       return (
-        <div className="orders">
-          <div className="orders-info">
-            <div className="orders-info-text">Past orders</div>
-          </div>
-          <div className="orders-list">
-            {this.props.orders.map(order => (
-              <div key={order.id} className="orders-list_item">
-                <NavLink to={`/orders/${order.id}`} activeClassName="active">
-                  <h2>Order number: {order.id}</h2>
-                </NavLink>
-                <p>Status: {order.status}</p>
-                <p>Total: {order.cartTotal}</p>
-                <p>Items: </p>
-                {order.products.map(product => (
-                  <div className="orders-product" key={product.id}>
-                    {`${product.productName} ${product.orderItems.quantity}`}
-                  </div>
-                ))}
-              </div>
+        <Container>
+          <Grid columns={4}>
+            {this.props.orders.map((order, index) => (
+              <Grid.Column key={index}>
+                <Card width="100px">
+                  <Card.Content as={NavLink} to={`/orders/${order.id}`}>
+                    <Card.Header>Order #: {order.id}</Card.Header>
+                    <Card.Description>
+                      <p>Items: </p>
+                      {order.products.map(product => (
+                        <div className="orders-product" key={product.id}>
+                          {`${product.productName}: ${
+                            product.orderItems.quantity
+                          }`}
+                        </div>
+                      ))}
+                    </Card.Description>
+                  </Card.Content>
+                  <Card.Content extra>
+                    <p>Status: {order.status}</p>
+                    <p>Total: {order.cartTotal}</p>
+                  </Card.Content>
+                </Card>
+              </Grid.Column>
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Container>
       )
     }
   }
