@@ -43,6 +43,23 @@ router.get('/admin/all', async (req, res, next) => {
   }
 })
 
+router.put('/admin/update', async (req, res, next) => {
+  if (req.user.userStatus === 'admin') {
+    try {
+      let newStatus = req.body.newStatus
+      let orderId = req.body.orderId
+      const order = await Order.findByPk(orderId, {
+        include: [{model: Product}]
+      })
+      order.status = newStatus
+      await order.save()
+      res.json(order)
+    } catch (err) {
+      next(err)
+    }
+  }
+})
+
 router.get('/:orderId', async (req, res, next) => {
   if (req.user) {
     try {

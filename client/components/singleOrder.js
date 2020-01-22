@@ -2,8 +2,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {NavLink, withRouter} from 'react-router-dom'
-import {setOrder, fetchOrder} from '../store/order'
-import {Container, Grid, Image, GridColumn, Button} from 'semantic-ui-react'
+import {setOrder, fetchOrder, updateOrder} from '../store/order'
+import {
+  Container,
+  Grid,
+  Image,
+  GridColumn,
+  Button,
+  Dropdown
+} from 'semantic-ui-react'
 import {me} from '../store'
 
 //export functional component which maps through props.products
@@ -18,6 +25,14 @@ class SingleOrder extends React.Component {
   }
 
   render() {
+    let cartStatusOptions = [
+      'cart',
+      'purchased',
+      'shipped',
+      'delivered',
+      'canceled'
+    ]
+    let dropDown
     if (!this.props.order.id) {
       return (
         <Container>
@@ -30,12 +45,30 @@ class SingleOrder extends React.Component {
       let button
       if (this.props.user.userStatus === 'admin') {
         button = (
-          <Button as={NavLink} to={`/editOrder/${this.props.order.id}`}>
-            Admin Change Order Status
+          <Button
+            onClick={async () => {
+              let orderStatus = document.getElementById('dropDownMenu')
+                .innerText
+              await this.props.updateOrder(orderStatus, this.props.order.id)
+            }}
+          >
+            Change Order
           </Button>
+        )
+        dropDown = (
+          <Dropdown
+            fluid
+            selection
+            options={cartStatusOptions.map(anOption => {
+              return {key: anOption, text: anOption, value: anOption}
+            })}
+            placeholder={this.props.order.status}
+            id="dropDownMenu"
+          />
         )
       } else {
         button = <div />
+        dropDown = <div />
       }
       return (
         <div className="order">
@@ -97,7 +130,7 @@ class SingleOrder extends React.Component {
                 </Container>
               </GridColumn>
             </Grid>
-            {button}
+            {button} {dropDown}
           </Container>
         </div>
       )
@@ -116,7 +149,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(me())
     },
     setOrder: orderObj => dispatch(setOrder(orderObj)),
-    fetchOrder: orderId => dispatch(fetchOrder(orderId))
+    fetchOrder: orderId => dispatch(fetchOrder(orderId)),
+    updateOrder: (newStatus, orderId) =>
+      dispatch(updateOrder(newStatus, orderId))
   }
 }
 

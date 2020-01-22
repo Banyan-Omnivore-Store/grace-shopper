@@ -14,6 +14,15 @@ export const fetchOrder = orderId => async dispatch => {
   dispatch(setOrder(order))
 }
 
+export const updateOrder = (newStatus, orderId) => async dispatch => {
+  const response = await axios.put('/api/orders/admin/update', {
+    newStatus,
+    orderId
+  })
+  const order = response.data
+  dispatch(setOrder(order))
+}
+
 //sub-reducer
 function reducer(order = {}, action) {
   switch (action.type) {
