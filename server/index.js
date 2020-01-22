@@ -97,7 +97,6 @@ const createApp = () => {
       service: 'Gmail',
       auth: auth
     })
-    // let prductArr =
     // eslint-disable-next-line react/react-in-jsx-scope
     let mailContent = `<h1>Hi ${firstName}!</h1><p>Thank you for your order! </p><p>Please access your full receipt at http://localhost:8080/orders at any time. Come back soon! </p><p>The Omnivore Store Team</p>`
     let mailText = `Hi ${firstName}!Thank you for your order! Please access your full receipt at http://localhost:8080/orders at any time. Come back soon! The Omnivore Store Team`

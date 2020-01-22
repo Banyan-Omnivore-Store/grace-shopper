@@ -4,10 +4,19 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
 import {Container, Grid, GridColumn, GridRow} from 'semantic-ui-react'
-import {GiCornucopia} from 'react-icons/gi'
+import {GiCornucopia, GiOat} from 'react-icons/gi'
 import './styling/navbar.css'
+import {fetchCart} from '../store/cart'
 
-const Navbar = ({handleClick, isLoggedIn}) => (
+const cartHasItems = cart => {
+  if (cart.products) {
+    return <div>({cart.products.length})Cart</div>
+  } else {
+    return <div>(0)Cart</div>
+  }
+}
+
+const Navbar = ({handleClick, isLoggedIn, cart}) => (
   <div>
     <nav>
       <Grid columns={2} padded>
@@ -20,7 +29,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
                   Home
                 </Link>
                 <Link to="/cart" id="menuItem">
-                  Cart
+                  {cartHasItems(cart)}
                 </Link>
                 <Link to="/products" id="menuItem">
                   Products
@@ -58,7 +67,8 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <GridRow>
             <Container textAlign="right">
               <h1>
-                <GiCornucopia />Omnivore Store
+                <GiCornucopia />
+                <GiOat />mnivore Store
               </h1>
             </Container>
           </GridRow>
@@ -74,7 +84,8 @@ const Navbar = ({handleClick, isLoggedIn}) => (
  */
 const mapState = state => {
   return {
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.user.id,
+    cart: state.cart
   }
 }
 
@@ -82,7 +93,8 @@ const mapDispatch = dispatch => {
   return {
     handleClick() {
       dispatch(logout())
-    }
+    },
+    fetchCart: () => dispatch(fetchCart())
   }
 }
 
