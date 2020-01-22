@@ -20,6 +20,11 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.post('/signup', async (req, res, next) => {
+  if (!req.body.email.match(/^[\w/.-]+@[\w/.-]+$/)) {
+    return res.status(400).send('Please enter a valid email')
+  } else if (req.body.password.length < 2) {
+    return res.status(400).send('Password is too short')
+  }
   try {
     const user = await User.create(req.body)
     req.login(user, err => (err ? next(err) : res.json(user)))

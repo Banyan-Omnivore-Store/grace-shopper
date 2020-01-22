@@ -38,9 +38,6 @@ const Signup = props => {
           </Segment>
         </Form>
         {error && error.response && <div> {error.response.data} </div>}
-        <Message>
-          <a href="/auth/google">{displayName} with Google</a>
-        </Message>
       </Grid.Column>
     </Grid>
   )
@@ -70,7 +67,6 @@ const mapDispatch = dispatch => {
       const email = evt.target.email.value
       const password = evt.target.password.value
       await dispatch(auth(email, password, formName))
-      history.push('/home')
     }
   }
 }

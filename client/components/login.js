@@ -22,7 +22,6 @@ class Login extends React.Component {
     const email = evt.target.email.value
     const password = evt.target.password.value
     await this.props.auth(email, password, formName)
-    history.push('/home')
   }
 
   render() {

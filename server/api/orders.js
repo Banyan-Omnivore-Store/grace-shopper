@@ -3,7 +3,7 @@
 const router = require('express').Router()
 const {Op} = require('sequelize')
 const {Order, Product, OrderItem, User} = require('../db/models')
-const stripe = require('stripe')('sk_test_zsN4YCSbJveiJszcG6fk8RSH00voXhddzN')
+const stripe = require('stripe')(process.env.STRIPE_KEY)
 
 module.exports = router
 
