@@ -1,13 +1,23 @@
 //import react to access JSX, be able to create react functional component
 import React from 'react'
 import {connect} from 'react-redux'
-import {setOrder, fetchOrder} from '../store/order'
-import {Container, Grid, Image, GridColumn} from 'semantic-ui-react'
+import {NavLink, withRouter} from 'react-router-dom'
+import {setOrder, fetchOrder, updateOrder} from '../store/order'
+import {
+  Container,
+  Grid,
+  Image,
+  GridColumn,
+  Button,
+  Dropdown
+} from 'semantic-ui-react'
+import {me} from '../store'
 
 //export functional component which maps through props.products
 class SingleOrder extends React.Component {
-  componentDidMount() {
-    this.props.fetchOrder(this.props.match.params.orderId)
+  async componentDidMount() {
+    await this.props.fetchOrder(this.props.match.params.orderId)
+    await this.props.loadInitialData()
   }
 
   componentWillUnmount() {
@@ -15,6 +25,14 @@ class SingleOrder extends React.Component {
   }
 
   render() {
+    let cartStatusOptions = [
+      'cart',
+      'purchased',
+      'shipped',
+      'delivered',
+      'canceled'
+    ]
+    let dropDown
     if (!this.props.order.id) {
       return (
         <Container>
@@ -24,6 +42,34 @@ class SingleOrder extends React.Component {
         </Container>
       )
     } else {
+      let button
+      if (this.props.user.userStatus === 'admin') {
+        button = (
+          <Button
+            onClick={async () => {
+              let orderStatus = document.getElementById('dropDownMenu')
+                .innerText
+              await this.props.updateOrder(orderStatus, this.props.order.id)
+            }}
+          >
+            Change Order
+          </Button>
+        )
+        dropDown = (
+          <Dropdown
+            fluid
+            selection
+            options={cartStatusOptions.map(anOption => {
+              return {key: anOption, text: anOption, value: anOption}
+            })}
+            placeholder={this.props.order.status}
+            id="dropDownMenu"
+          />
+        )
+      } else {
+        button = <div />
+        dropDown = <div />
+      }
       return (
         <div className="order">
           <Container>
@@ -84,6 +130,7 @@ class SingleOrder extends React.Component {
                 </Container>
               </GridColumn>
             </Grid>
+            {button} {dropDown}
           </Container>
         </div>
       )
@@ -98,8 +145,13 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
+    loadInitialData() {
+      dispatch(me())
+    },
     setOrder: orderObj => dispatch(setOrder(orderObj)),
-    fetchOrder: orderId => dispatch(fetchOrder(orderId))
+    fetchOrder: orderId => dispatch(fetchOrder(orderId)),
+    updateOrder: (newStatus, orderId) =>
+      dispatch(updateOrder(newStatus, orderId))
   }
 }
 

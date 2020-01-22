@@ -28,6 +28,38 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+router.get('/admin/all', async (req, res, next) => {
+  if (req.user.userStatus === 'admin') {
+    try {
+      const orders = await Order.findAll({
+        include: [{model: Product}]
+      })
+      res.json(orders)
+    } catch (err) {
+      next(err)
+    }
+  } else {
+    res.status(401).send('Unauthenticated user')
+  }
+})
+
+router.put('/admin/update', async (req, res, next) => {
+  if (req.user.userStatus === 'admin') {
+    try {
+      let newStatus = req.body.newStatus
+      let orderId = req.body.orderId
+      const order = await Order.findByPk(orderId, {
+        include: [{model: Product}]
+      })
+      order.status = newStatus
+      await order.save()
+      res.json(order)
+    } catch (err) {
+      next(err)
+    }
+  }
+})
+
 router.get('/:orderId', async (req, res, next) => {
   if (req.user) {
     try {
@@ -35,7 +67,7 @@ router.get('/:orderId', async (req, res, next) => {
         include: [{model: Product}]
       })
 
-      if (order.userId === req.user.id) {
+      if (order.userId === req.user.id || req.user.userStatus === 'admin') {
         res.json(order)
       } else {
         res.status(401).send('Unauthenticated user')

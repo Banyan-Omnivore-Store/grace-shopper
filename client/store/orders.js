@@ -14,6 +14,12 @@ export const fetchOrders = () => async dispatch => {
   dispatch(setOrders(orders))
 }
 
+export const fetchAdminOrders = () => async dispatch => {
+  const response = await axios.get('/api/orders/admin/all')
+  const orders = response.data
+  dispatch(setOrders(orders))
+}
+
 //sub-reducer
 function reducer(orders = [], action) {
   switch (action.type) {
