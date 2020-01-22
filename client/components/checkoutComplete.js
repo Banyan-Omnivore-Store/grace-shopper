@@ -25,8 +25,8 @@ class CheckoutComplete extends React.Component {
             <h3 className="checkout-complete-info_text">Your order: </h3>
             <br />
           </div>
-          <Grid columns={3} divided>
-            <GridColumn /*width={4}*/>
+          <Grid columns={2} divided>
+            <GridColumn>
               <h3 className="checkout-complete-item_field">
                 {`Total: $${order.cartTotal}`}
               </h3>
@@ -34,7 +34,7 @@ class CheckoutComplete extends React.Component {
                 order.products.length
               } item(s) total`}</h3>
             </GridColumn>
-            <GridColumn /*width={4}*/>
+            <GridColumn>
               <div className="checkout-complete-items">
                 {order.products.map(product => (
                   <div key={product.id} className="checkout-complete-item">
@@ -45,30 +45,32 @@ class CheckoutComplete extends React.Component {
                           {product.productName}
                         </h4>
                         <div className="checkout-complete-item_field">
-                          Unit Price: {product.orderItems.purchasePrice}
+                          Unit Price: ${product.orderItems.purchasePrice}
                         </div>
                         <div className="checkout-complete-item_field">
                           Quantity: {product.orderItems.quantity}
                         </div>
                       </span>
                     </Grid.Row>
+                    <br />
                   </div>
                 ))}
               </div>
             </GridColumn>
-            <GridColumn /*width={4}*/>
+            {/* <GridColumn >
               {order.products.map(product => (
                 <div className="checkout-complete-item" key={product.id}>
                   <Grid.Row>
-                    <img
+                    <Image
                       src={product.imageUrl}
-                      height="200px"
+                      size="small"
                       className="checkout-complete-item_field"
                     />
+                    <br />
                   </Grid.Row>
                 </div>
               ))}
-            </GridColumn>
+            </GridColumn> */}
           </Grid>
         </Container>
       </div>
