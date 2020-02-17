@@ -72,9 +72,6 @@ class AllProducts extends React.Component {
                 placeholder="Search..."
               />
               <br />
-              <Button type="submit" onClick={() => this.renderAllProducts()}>
-                Return to All Products
-              </Button>
               <h4>Search by category: </h4>
               {/* couldn't get semantic drop down to work, wasn't sending the category/product object you have set up */}
               {/* <Dropdown
