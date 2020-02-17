@@ -15,7 +15,7 @@ For a deployed demo, please check out http://omnivore-store.herokuapp.com. Use c
 * Complete checkout process and payment integration with Stripe.
 * Cart persistance and modification for both logged in users and guest users.
 * Live filtering of products.
-* Full backend server with passport.js authentication, postgreSQL database, sessions with express-session, and protectd routes for added security.
+* Full backend server with passport.js authentication, postgreSQL database, sessions with express-session, and protected routes for added security.
 * Confirmation emails sent via nodemailer after completion of checkout.
 
 ## Running from source
